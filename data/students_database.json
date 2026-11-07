@@ -1,0 +1,1900 @@
+{
+  "users": [
+    {
+      "id": "usr_admin",
+      "email": "admin@edupredict.ac.in",
+      "name": "Dr. K. Ramanathan (HOD CSE-AIML)",
+      "role": "admin",
+      "passwordHash": "admin123"
+    },
+    {
+      "id": "usr_std_1",
+      "email": "aarav.sharma@srmist.edu.in",
+      "rollNo": "RA2311003010012",
+      "name": "Aarav Sharma",
+      "role": "student",
+      "studentId": "std_1",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_2",
+      "email": "sneha.patel@srmist.edu.in",
+      "rollNo": "RA2311003010045",
+      "name": "Sneha Patel",
+      "role": "student",
+      "studentId": "std_2",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_3",
+      "email": "rohan.iyer@srmist.edu.in",
+      "rollNo": "RA2311003010088",
+      "name": "Rohan Iyer",
+      "role": "student",
+      "studentId": "std_3",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_4",
+      "email": "priya.reddy@srmist.edu.in",
+      "rollNo": "RA2311003010103",
+      "name": "Priya Reddy",
+      "role": "student",
+      "studentId": "std_4",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_5",
+      "email": "vikram.m@srmist.edu.in",
+      "rollNo": "RA2311003010156",
+      "name": "Vikram Malhotra",
+      "role": "student",
+      "studentId": "std_5",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_6",
+      "email": "ananya.sen@srmist.edu.in",
+      "rollNo": "RA2311003010189",
+      "name": "Ananya Sen",
+      "role": "student",
+      "studentId": "std_6",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_7",
+      "email": "zeeshan.m@srmist.edu.in",
+      "rollNo": "RA2311003010214",
+      "name": "Mohammed Zeeshan",
+      "role": "student",
+      "studentId": "std_7",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_8",
+      "email": "tanvi.d@srmist.edu.in",
+      "rollNo": "RA2311003010260",
+      "name": "Tanvi Deshmukh",
+      "role": "student",
+      "studentId": "std_8",
+      "passwordHash": "student123"
+    },
+    {
+      "id": "usr_std_1794074657242",
+      "email": "vv6222@srmist.edu.in",
+      "rollNo": "RA2511026050262",
+      "name": "sita",
+      "role": "student",
+      "studentId": "std_1794074657242",
+      "passwordHash": "student123"
+    }
+  ],
+  "students": [
+    {
+      "id": "std_1794074657242",
+      "rollNo": "RA2511026050262",
+      "name": "sita",
+      "email": "vv6222@srmist.edu.in",
+      "phone": "7569360451",
+      "gender": "Male",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 3,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_1794074657242",
+        "studentId": "std_1794074657242",
+        "semester": 3,
+        "attendancePercent": 88.5,
+        "studyHoursPerWeek": 14,
+        "internalTest1": 38,
+        "internalTest2": 40,
+        "assignmentScore": 80,
+        "labScore": 85,
+        "previousCgpa": 7.8,
+        "sleepHours": 7,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "credits": 4,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 45,
+            "attendedClasses": 40,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "credits": 4,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 45,
+            "attendedClasses": 42,
+            "attendancePercent": 93.3
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "credits": 3,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 36,
+            "attendedClasses": 32,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "credits": 3,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 36,
+            "attendedClasses": 30,
+            "attendancePercent": 83.3
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "credits": 4,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 45,
+            "attendedClasses": 38,
+            "attendancePercent": 84.4
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "credits": 2,
+            "internal": 38,
+            "assignment": 40,
+            "totalClasses": 28,
+            "attendedClasses": 26,
+            "attendancePercent": 92.9
+          }
+        ],
+        "notes": "Newly enrolled academic record.",
+        "updatedAt": "2026-11-07T18:50:25.534Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794077425535_avwr",
+        "studentId": "std_1794074657242",
+        "predictedScore": 80.4,
+        "predictedSgpa": 8.04,
+        "category": "Good",
+        "riskLevel": "Low",
+        "confidenceScore": 93.2,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 29,
+            "status": "Positive",
+            "detail": "Average: 78.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 20,
+            "status": "Positive",
+            "detail": "88.5% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 13,
+            "status": "Positive",
+            "detail": "14 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 21,
+            "status": "Positive",
+            "detail": "Previous CGPA: 7.80 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "80% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T18:50:25.535Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794077425535_avwr",
+          "studentId": "std_1794074657242",
+          "predictedScore": 80.4,
+          "predictedSgpa": 8.04,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 93.2,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 29,
+              "status": "Positive",
+              "detail": "Average: 78.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 20,
+              "status": "Positive",
+              "detail": "88.5% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "14 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.80 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "80% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T18:50:25.535Z"
+        },
+        {
+          "id": "pred_1794074657242_w0ci",
+          "studentId": "std_1794074657242",
+          "predictedScore": 78.9,
+          "predictedSgpa": 7.89,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 93.10000000000001,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 30,
+              "status": "Positive",
+              "detail": "Average: 78.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "80% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "14 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 22,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.80 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "80% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T18:04:17.242Z"
+        }
+      ],
+      "createdAt": "2026-11-07T18:04:17.242Z"
+    },
+    {
+      "id": "std_1",
+      "rollNo": "RA2311003010012",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@srmist.edu.in",
+      "phone": "+91 98765 43210",
+      "gender": "Male",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_1",
+        "studentId": "std_1",
+        "semester": 4,
+        "attendancePercent": 92,
+        "studyHoursPerWeek": 21,
+        "internalTest1": 46,
+        "internalTest2": 48,
+        "assignmentScore": 94,
+        "labScore": 95,
+        "previousCgpa": 9.35,
+        "sleepHours": 7.5,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 47,
+            "assignment": 48,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 39,
+            "attendancePercent": 86.7
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 48,
+            "assignment": 49,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 41,
+            "attendancePercent": 91.1
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 46,
+            "assignment": 47,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 35,
+            "attendancePercent": 97.2
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 44,
+            "assignment": 46,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 32,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 46,
+            "assignment": 46,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 43,
+            "attendancePercent": 95.6
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 49,
+            "assignment": 50,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 25,
+            "attendancePercent": 89.3
+          }
+        ],
+        "notes": "Consistent peer tutor and competitive programmer.",
+        "updatedAt": "2026-11-07T17:45:25.954Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525955_amj2",
+        "studentId": "std_1",
+        "predictedScore": 96.5,
+        "predictedSgpa": 9.65,
+        "category": "Excellent",
+        "riskLevel": "Low",
+        "confidenceScore": 93.60000000000001,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 29,
+            "status": "Positive",
+            "detail": "Average: 94.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 17,
+            "status": "Positive",
+            "detail": "92% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 14,
+            "status": "Positive",
+            "detail": "21 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 21,
+            "status": "Positive",
+            "detail": "Previous CGPA: 9.35 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "94% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525955_amj2",
+          "studentId": "std_1",
+          "predictedScore": 96.5,
+          "predictedSgpa": 9.65,
+          "category": "Excellent",
+          "riskLevel": "Low",
+          "confidenceScore": 93.60000000000001,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 29,
+              "status": "Positive",
+              "detail": "Average: 94.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 17,
+              "status": "Positive",
+              "detail": "92% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 14,
+              "status": "Positive",
+              "detail": "21 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 9.35 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "94% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.955Z"
+        }
+      ],
+      "createdAt": "2026-11-03T17:45:25.955Z"
+    },
+    {
+      "id": "std_2",
+      "rollNo": "RA2311003010045",
+      "name": "Sneha Patel",
+      "email": "sneha.patel@srmist.edu.in",
+      "phone": "+91 98123 45678",
+      "gender": "Female",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_2",
+        "studentId": "std_2",
+        "semester": 4,
+        "attendancePercent": 84,
+        "studyHoursPerWeek": 15,
+        "internalTest1": 41,
+        "internalTest2": 39,
+        "assignmentScore": 82,
+        "labScore": 86,
+        "previousCgpa": 8.24,
+        "sleepHours": 7,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 40,
+            "assignment": 42,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 35,
+            "attendancePercent": 77.8
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 42,
+            "assignment": 44,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 38,
+            "attendancePercent": 84.4
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 38,
+            "assignment": 40,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 32,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 39,
+            "assignment": 41,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 30,
+            "attendancePercent": 83.3
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 40,
+            "assignment": 39,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 40,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 45,
+            "assignment": 44,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 22,
+            "attendancePercent": 78.6
+          }
+        ],
+        "notes": "Active in AI club; steady improvements in algorithms.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525955_sogy",
+        "studentId": "std_2",
+        "predictedScore": 81.9,
+        "predictedSgpa": 8.19,
+        "category": "Good",
+        "riskLevel": "Low",
+        "confidenceScore": 94.7,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 29,
+            "status": "Positive",
+            "detail": "Average: 80.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 18,
+            "status": "Positive",
+            "detail": "84% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 13,
+            "status": "Positive",
+            "detail": "15 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 22,
+            "status": "Positive",
+            "detail": "Previous CGPA: 8.24 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "82% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525955_sogy",
+          "studentId": "std_2",
+          "predictedScore": 81.9,
+          "predictedSgpa": 8.19,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.7,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 29,
+              "status": "Positive",
+              "detail": "Average: 80.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "84% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "15 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 22,
+              "status": "Positive",
+              "detail": "Previous CGPA: 8.24 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "82% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.955Z"
+        }
+      ],
+      "createdAt": "2026-10-30T17:45:25.955Z"
+    },
+    {
+      "id": "std_3",
+      "rollNo": "RA2311003010088",
+      "name": "Rohan Iyer",
+      "email": "rohan.iyer@srmist.edu.in",
+      "phone": "+91 97654 32109",
+      "gender": "Male",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_3",
+        "studentId": "std_3",
+        "semester": 4,
+        "attendancePercent": 74,
+        "studyHoursPerWeek": 10,
+        "internalTest1": 32,
+        "internalTest2": 31,
+        "assignmentScore": 68,
+        "labScore": 72,
+        "previousCgpa": 6.75,
+        "sleepHours": 6,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 29,
+            "assignment": 32,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 31,
+            "attendancePercent": 68.9
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 34,
+            "assignment": 36,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 33,
+            "attendancePercent": 73.3
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 30,
+            "assignment": 33,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 29,
+            "attendancePercent": 80.6
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 28,
+            "assignment": 30,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 26,
+            "attendancePercent": 72.2
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 31,
+            "assignment": 34,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 35,
+            "attendancePercent": 77.8
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 38,
+            "assignment": 39,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 20,
+            "attendancePercent": 71.4
+          }
+        ],
+        "notes": "Borderline attendance. Needs support with OS memory management concepts.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525955_zmc4",
+        "studentId": "std_3",
+        "predictedScore": 61.7,
+        "predictedSgpa": 6.17,
+        "category": "Average",
+        "riskLevel": "Moderate",
+        "confidenceScore": 94.4,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 31,
+            "status": "Neutral",
+            "detail": "Average: 63.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 22,
+            "status": "Negative",
+            "detail": "74% attendance (BELOW 75% MINIMUM)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 13,
+            "status": "Neutral",
+            "detail": "10 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 24,
+            "status": "Neutral",
+            "detail": "Previous CGPA: 6.75 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 11,
+            "status": "Neutral",
+            "detail": "68% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Priority Alert: Attend next 4 consecutive classes without absence to cross the mandatory 75% attendance criteria.",
+          "Increase weekly self-study from 10 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition).",
+          "Complete tutorial coding problems and submit pending assignments before the grace deadline."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525955_zmc4",
+          "studentId": "std_3",
+          "predictedScore": 61.7,
+          "predictedSgpa": 6.17,
+          "category": "Average",
+          "riskLevel": "Moderate",
+          "confidenceScore": 94.4,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 31,
+              "status": "Neutral",
+              "detail": "Average: 63.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 22,
+              "status": "Negative",
+              "detail": "74% attendance (BELOW 75% MINIMUM)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Neutral",
+              "detail": "10 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 24,
+              "status": "Neutral",
+              "detail": "Previous CGPA: 6.75 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 11,
+              "status": "Neutral",
+              "detail": "68% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Priority Alert: Attend next 4 consecutive classes without absence to cross the mandatory 75% attendance criteria.",
+            "Increase weekly self-study from 10 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition).",
+            "Complete tutorial coding problems and submit pending assignments before the grace deadline."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.955Z"
+        }
+      ],
+      "createdAt": "2026-10-26T17:45:25.955Z"
+    },
+    {
+      "id": "std_4",
+      "rollNo": "RA2311003010103",
+      "name": "Priya Reddy",
+      "email": "priya.reddy@srmist.edu.in",
+      "phone": "+91 96543 21098",
+      "gender": "Female",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_4",
+        "studentId": "std_4",
+        "semester": 4,
+        "attendancePercent": 61,
+        "studyHoursPerWeek": 5,
+        "internalTest1": 21,
+        "internalTest2": 23,
+        "assignmentScore": 50,
+        "labScore": 56,
+        "previousCgpa": 5.12,
+        "sleepHours": 5,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 19,
+            "assignment": 24,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 25,
+            "attendancePercent": 55.6
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 24,
+            "assignment": 27,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 27,
+            "attendancePercent": 60
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 22,
+            "assignment": 25,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 24,
+            "attendancePercent": 66.7
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 18,
+            "assignment": 22,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 21,
+            "attendancePercent": 58.3
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 20,
+            "assignment": 23,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 29,
+            "attendancePercent": 64.4
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 30,
+            "assignment": 32,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 16,
+            "attendancePercent": 57.1
+          }
+        ],
+        "notes": "High risk of semester detention due to medical absence. Mentor intervention scheduled.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525956_itaf",
+        "studentId": "std_4",
+        "predictedScore": 38.9,
+        "predictedSgpa": 3.89,
+        "category": "Needs Improvement",
+        "riskLevel": "Critical",
+        "confidenceScore": 93.10000000000001,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 34,
+            "status": "Negative",
+            "detail": "Average: 44.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 28,
+            "status": "Negative",
+            "detail": "61% attendance (BELOW 75% MINIMUM)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 11,
+            "status": "Negative",
+            "detail": "5 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 29,
+            "status": "Negative",
+            "detail": "Previous CGPA: 5.12 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 13,
+            "status": "Neutral",
+            "detail": "50% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Priority Alert: Attend next 34 consecutive classes without absence to cross the mandatory 75% attendance criteria.",
+          "Schedule one-on-one doubt clearing sessions with course faculty on low-scoring midterm concepts.",
+          "Increase weekly self-study from 5 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition).",
+          "Complete tutorial coding problems and submit pending assignments before the grace deadline.",
+          "Target 7 hours of restorative sleep; irregular sleep significantly hampers working memory during exam problem solving."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.956Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525956_itaf",
+          "studentId": "std_4",
+          "predictedScore": 38.9,
+          "predictedSgpa": 3.89,
+          "category": "Needs Improvement",
+          "riskLevel": "Critical",
+          "confidenceScore": 93.10000000000001,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 34,
+              "status": "Negative",
+              "detail": "Average: 44.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 28,
+              "status": "Negative",
+              "detail": "61% attendance (BELOW 75% MINIMUM)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 11,
+              "status": "Negative",
+              "detail": "5 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 29,
+              "status": "Negative",
+              "detail": "Previous CGPA: 5.12 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 13,
+              "status": "Neutral",
+              "detail": "50% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Priority Alert: Attend next 34 consecutive classes without absence to cross the mandatory 75% attendance criteria.",
+            "Schedule one-on-one doubt clearing sessions with course faculty on low-scoring midterm concepts.",
+            "Increase weekly self-study from 5 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition).",
+            "Complete tutorial coding problems and submit pending assignments before the grace deadline.",
+            "Target 7 hours of restorative sleep; irregular sleep significantly hampers working memory during exam problem solving."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.956Z"
+        }
+      ],
+      "createdAt": "2026-10-22T17:45:25.956Z"
+    },
+    {
+      "id": "std_5",
+      "rollNo": "RA2311003010156",
+      "name": "Vikram Malhotra",
+      "email": "vikram.m@srmist.edu.in",
+      "phone": "+91 95432 10987",
+      "gender": "Male",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_5",
+        "studentId": "std_5",
+        "semester": 4,
+        "attendancePercent": 88,
+        "studyHoursPerWeek": 17,
+        "internalTest1": 43,
+        "internalTest2": 44,
+        "assignmentScore": 89,
+        "labScore": 91,
+        "previousCgpa": 8.58,
+        "sleepHours": 7,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 44,
+            "assignment": 46,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 37,
+            "attendancePercent": 82.2
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 45,
+            "assignment": 46,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 40,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 42,
+            "assignment": 43,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 34,
+            "attendancePercent": 94.4
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 41,
+            "assignment": 42,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 31,
+            "attendancePercent": 86.1
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 43,
+            "assignment": 44,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 41,
+            "attendancePercent": 91.1
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 48,
+            "assignment": 47,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 24,
+            "attendancePercent": 85.7
+          }
+        ],
+        "notes": "Strong practical skills; team lead in college hackathon.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525956_722c",
+        "studentId": "std_5",
+        "predictedScore": 87.4,
+        "predictedSgpa": 8.74,
+        "category": "Excellent",
+        "riskLevel": "Low",
+        "confidenceScore": 94.2,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 30,
+            "status": "Positive",
+            "detail": "Average: 87.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 18,
+            "status": "Positive",
+            "detail": "88% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 13,
+            "status": "Positive",
+            "detail": "17 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 22,
+            "status": "Positive",
+            "detail": "Previous CGPA: 8.58 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "89% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.956Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525956_722c",
+          "studentId": "std_5",
+          "predictedScore": 87.4,
+          "predictedSgpa": 8.74,
+          "category": "Excellent",
+          "riskLevel": "Low",
+          "confidenceScore": 94.2,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 30,
+              "status": "Positive",
+              "detail": "Average: 87.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "88% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "17 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 22,
+              "status": "Positive",
+              "detail": "Previous CGPA: 8.58 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "89% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.956Z"
+        }
+      ],
+      "createdAt": "2026-10-18T17:45:25.956Z"
+    },
+    {
+      "id": "std_6",
+      "rollNo": "RA2311003010189",
+      "name": "Ananya Sen",
+      "email": "ananya.sen@srmist.edu.in",
+      "phone": "+91 94321 09876",
+      "gender": "Female",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_6",
+        "studentId": "std_6",
+        "semester": 4,
+        "attendancePercent": 97,
+        "studyHoursPerWeek": 26,
+        "internalTest1": 49,
+        "internalTest2": 50,
+        "assignmentScore": 98,
+        "labScore": 98,
+        "previousCgpa": 9.85,
+        "sleepHours": 8,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 50,
+            "assignment": 50,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 41,
+            "attendancePercent": 91.1
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 49,
+            "assignment": 50,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 44,
+            "attendancePercent": 97.8
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 48,
+            "assignment": 49,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 36,
+            "attendancePercent": 100
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 49,
+            "assignment": 48,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 34,
+            "attendancePercent": 94.4
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 50,
+            "assignment": 50,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 45,
+            "attendancePercent": 100
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 50,
+            "assignment": 50,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 26,
+            "attendancePercent": 92.9
+          }
+        ],
+        "notes": "Department rank 1. Research paper under preparation in deep learning.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525956_g3z7",
+        "studentId": "std_6",
+        "predictedScore": 99.4,
+        "predictedSgpa": 9.94,
+        "category": "Excellent",
+        "riskLevel": "Low",
+        "confidenceScore": 94.7,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 29,
+            "status": "Positive",
+            "detail": "Average: 99.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 17,
+            "status": "Positive",
+            "detail": "97% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 14,
+            "status": "Positive",
+            "detail": "26 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 21,
+            "status": "Positive",
+            "detail": "Previous CGPA: 9.85 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "98% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.956Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525956_g3z7",
+          "studentId": "std_6",
+          "predictedScore": 99.4,
+          "predictedSgpa": 9.94,
+          "category": "Excellent",
+          "riskLevel": "Low",
+          "confidenceScore": 94.7,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 29,
+              "status": "Positive",
+              "detail": "Average: 99.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 17,
+              "status": "Positive",
+              "detail": "97% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 14,
+              "status": "Positive",
+              "detail": "26 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 9.85 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "98% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.956Z"
+        }
+      ],
+      "createdAt": "2026-10-14T17:45:25.956Z"
+    },
+    {
+      "id": "std_7",
+      "rollNo": "RA2311003010214",
+      "name": "Mohammed Zeeshan",
+      "email": "zeeshan.m@srmist.edu.in",
+      "phone": "+91 93210 98765",
+      "gender": "Male",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_7",
+        "studentId": "std_7",
+        "semester": 4,
+        "attendancePercent": 79,
+        "studyHoursPerWeek": 12,
+        "internalTest1": 35,
+        "internalTest2": 36,
+        "assignmentScore": 74,
+        "labScore": 78,
+        "previousCgpa": 7.15,
+        "sleepHours": 6.5,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 34,
+            "assignment": 37,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 33,
+            "attendancePercent": 73.3
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 37,
+            "assignment": 38,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 36,
+            "attendancePercent": 80
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 35,
+            "assignment": 36,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 31,
+            "attendancePercent": 86.1
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 32,
+            "assignment": 34,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 28,
+            "attendancePercent": 77.8
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 34,
+            "assignment": 35,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 37,
+            "attendancePercent": 82.2
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 41,
+            "assignment": 42,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 21,
+            "attendancePercent": 75
+          }
+        ],
+        "notes": "Shows good interest in ML models; needs boost in discrete probability.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525956_mzvy",
+        "studentId": "std_7",
+        "predictedScore": 71.8,
+        "predictedSgpa": 7.18,
+        "category": "Good",
+        "riskLevel": "Low",
+        "confidenceScore": 94.10000000000001,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 30,
+            "status": "Neutral",
+            "detail": "Average: 71.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 20,
+            "status": "Positive",
+            "detail": "79% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 13,
+            "status": "Neutral",
+            "detail": "12 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 22,
+            "status": "Neutral",
+            "detail": "Previous CGPA: 7.15 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Neutral",
+            "detail": "74% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Increase weekly self-study from 12 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition)."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.956Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525956_mzvy",
+          "studentId": "std_7",
+          "predictedScore": 71.8,
+          "predictedSgpa": 7.18,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.10000000000001,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 30,
+              "status": "Neutral",
+              "detail": "Average: 71.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 20,
+              "status": "Positive",
+              "detail": "79% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Neutral",
+              "detail": "12 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 22,
+              "status": "Neutral",
+              "detail": "Previous CGPA: 7.15 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Neutral",
+              "detail": "74% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Increase weekly self-study from 12 hrs to at least 15-18 hrs (dedicate 2.5 hours daily focused study with spaced repetition)."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.956Z"
+        }
+      ],
+      "createdAt": "2026-10-10T17:45:25.956Z"
+    },
+    {
+      "id": "std_8",
+      "rollNo": "RA2311003010260",
+      "name": "Tanvi Deshmukh",
+      "email": "tanvi.d@srmist.edu.in",
+      "phone": "+91 92109 87654",
+      "gender": "Female",
+      "department": "CSE - Artificial Intelligence & Machine Learning",
+      "year": 2,
+      "semester": 4,
+      "batch": "2023-2027",
+      "academic": {
+        "id": "acad_8",
+        "studentId": "std_8",
+        "semester": 4,
+        "attendancePercent": 82,
+        "studyHoursPerWeek": 16,
+        "internalTest1": 39,
+        "internalTest2": 42,
+        "assignmentScore": 84,
+        "labScore": 88,
+        "previousCgpa": 7.92,
+        "sleepHours": 7,
+        "subjects": [
+          {
+            "code": "CS201",
+            "name": "Data Structures & Algorithms",
+            "internal": 40,
+            "assignment": 43,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 34,
+            "attendancePercent": 75.6
+          },
+          {
+            "code": "AI202",
+            "name": "Foundations of Machine Learning",
+            "internal": 41,
+            "assignment": 44,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 37,
+            "attendancePercent": 82.2
+          },
+          {
+            "code": "CS203",
+            "name": "Database Management Systems",
+            "internal": 38,
+            "assignment": 41,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 32,
+            "attendancePercent": 88.9
+          },
+          {
+            "code": "CS204",
+            "name": "Operating Systems & Architecture",
+            "internal": 37,
+            "assignment": 39,
+            "credits": 3,
+            "totalClasses": 36,
+            "attendedClasses": 29,
+            "attendancePercent": 80.6
+          },
+          {
+            "code": "MA205",
+            "name": "Discrete Mathematics & Probability",
+            "internal": 39,
+            "assignment": 40,
+            "credits": 4,
+            "totalClasses": 45,
+            "attendedClasses": 39,
+            "attendancePercent": 86.7
+          },
+          {
+            "code": "AI206",
+            "name": "Artificial Intelligence Lab",
+            "internal": 46,
+            "assignment": 46,
+            "credits": 2,
+            "totalClasses": 28,
+            "attendedClasses": 22,
+            "attendancePercent": 78.6
+          }
+        ],
+        "notes": "Consistent improvement in internal tests; strong lab records.",
+        "updatedAt": "2026-11-07T17:45:25.955Z"
+      },
+      "latestPrediction": {
+        "id": "pred_1794073525956_ibnw",
+        "studentId": "std_8",
+        "predictedScore": 81.9,
+        "predictedSgpa": 8.19,
+        "category": "Good",
+        "riskLevel": "Low",
+        "confidenceScore": 94.2,
+        "featureContributions": [
+          {
+            "feature": "Internal Tests (IAT 1 & 2)",
+            "impact": 30,
+            "status": "Positive",
+            "detail": "Average: 81.0/100 across both midterms."
+          },
+          {
+            "feature": "Attendance Record",
+            "impact": 18,
+            "status": "Positive",
+            "detail": "82% attendance (Eligible for finals)."
+          },
+          {
+            "feature": "Study Hours Commitment",
+            "impact": 14,
+            "status": "Positive",
+            "detail": "16 hrs/week devoted to self-study."
+          },
+          {
+            "feature": "Prior Academic Baseline (CGPA)",
+            "impact": 21,
+            "status": "Positive",
+            "detail": "Previous CGPA: 7.92 / 10.0."
+          },
+          {
+            "feature": "Assignments & Projects",
+            "impact": 10,
+            "status": "Positive",
+            "detail": "84% completion on programming assignments."
+          }
+        ],
+        "recommendations": [
+          "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+          "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+        ],
+        "simulatedAt": "2026-11-07T17:45:25.956Z"
+      },
+      "predictionHistory": [
+        {
+          "id": "pred_1794073525956_ibnw",
+          "studentId": "std_8",
+          "predictedScore": 81.9,
+          "predictedSgpa": 8.19,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.2,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 30,
+              "status": "Positive",
+              "detail": "Average: 81.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "82% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 14,
+              "status": "Positive",
+              "detail": "16 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.92 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "84% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-07T17:45:25.956Z"
+        }
+      ],
+      "createdAt": "2026-10-06T17:45:25.956Z"
+    }
+  ],
+  "teachers": [
+    {
+      "id": "tch_1",
+      "empId": "EMP-CSE-1021",
+      "name": "Dr. R. Meenakshi",
+      "designation": "Professor",
+      "department": "Computer Science & Engineering",
+      "email": "meenakshi.r@srmist.edu.in",
+      "phone": "+91 98401 23456",
+      "subjectCode": "CS201",
+      "subjectName": "Data Structures & Algorithms",
+      "cabinNumber": "Tech Park 4th Floor, Cabin 402",
+      "qualification": "Ph.D. in Computer Science (IIT Madras)",
+      "experienceYears": 16,
+      "officeHours": "Mon & Wed: 2:00 PM - 4:00 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    },
+    {
+      "id": "tch_2",
+      "empId": "EMP-AIML-2045",
+      "name": "Dr. S. Vignesh",
+      "designation": "Associate Professor",
+      "department": "Artificial Intelligence & Machine Learning",
+      "email": "vignesh.s@srmist.edu.in",
+      "phone": "+91 98402 34567",
+      "subjectCode": "AI202",
+      "subjectName": "Foundations of Machine Learning",
+      "cabinNumber": "Tech Park 5th Floor, Cabin 508",
+      "qualification": "Ph.D. in Deep Learning (IISc Bangalore)",
+      "experienceYears": 11,
+      "officeHours": "Tue & Thu: 10:00 AM - 12:00 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    },
+    {
+      "id": "tch_3",
+      "empId": "EMP-CSE-1088",
+      "name": "Dr. Priya Sundaram",
+      "designation": "Assistant Professor",
+      "department": "Computer Science & Engineering",
+      "email": "priya.sundaram@srmist.edu.in",
+      "phone": "+91 98403 45678",
+      "subjectCode": "CS203",
+      "subjectName": "Database Management Systems",
+      "cabinNumber": "Tech Park 3rd Floor, Cabin 312",
+      "qualification": "M.Tech, Ph.D. in Distributed Data (Anna Univ)",
+      "experienceYears": 8,
+      "officeHours": "Wed & Fri: 3:00 PM - 5:00 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    },
+    {
+      "id": "tch_4",
+      "empId": "EMP-CSE-1102",
+      "name": "Prof. K. Anand Kumar",
+      "designation": "Associate Professor",
+      "department": "Computer Science & Engineering",
+      "email": "anandkumar.k@srmist.edu.in",
+      "phone": "+91 98404 56789",
+      "subjectCode": "CS204",
+      "subjectName": "Operating Systems & Architecture",
+      "cabinNumber": "Tech Park 4th Floor, Cabin 415",
+      "qualification": "M.E. in Computer Systems, Pursuing Ph.D.",
+      "experienceYears": 13,
+      "officeHours": "Mon & Thu: 11:00 AM - 1:00 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    },
+    {
+      "id": "tch_5",
+      "empId": "EMP-MATH-3012",
+      "name": "Dr. M. V. Lakshmi",
+      "designation": "Professor",
+      "department": "Mathematics & Statistics",
+      "email": "lakshmi.mv@srmist.edu.in",
+      "phone": "+91 98405 67890",
+      "subjectCode": "MA205",
+      "subjectName": "Discrete Mathematics & Probability",
+      "cabinNumber": "Tech Park 2nd Floor, Cabin 201",
+      "qualification": "Ph.D. in Applied Mathematics (Univ of Madras)",
+      "experienceYears": 19,
+      "officeHours": "Tue & Fri: 2:00 PM - 3:30 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    },
+    {
+      "id": "tch_6",
+      "empId": "EMP-AIML-2077",
+      "name": "Dr. Rajesh Narayanan",
+      "designation": "Assistant Professor (Senior Grade)",
+      "department": "Artificial Intelligence & Machine Learning",
+      "email": "rajesh.n@srmist.edu.in",
+      "phone": "+91 98406 78901",
+      "subjectCode": "AI206",
+      "subjectName": "Artificial Intelligence Lab",
+      "cabinNumber": "Tech Park 5th Floor, AI Lab 2",
+      "qualification": "Ph.D. in Computer Vision & Robotics",
+      "experienceYears": 7,
+      "officeHours": "Mon to Fri: 4:00 PM - 5:00 PM",
+      "createdAt": "2026-11-07T18:25:04.460Z"
+    }
+  ]
+}

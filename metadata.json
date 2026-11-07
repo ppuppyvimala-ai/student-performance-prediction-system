@@ -1,0 +1,6 @@
+{
+  "name": "Student Performance Prediction and Analysis System",
+  "description": "Advanced full-stack analytics and machine learning prediction system for engineering students, evaluating academic progress, attendance, study patterns, and subject-wise metrics with responsive iPad and mobile PWA support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
