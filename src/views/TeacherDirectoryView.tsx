@@ -19,11 +19,17 @@ import {
   CheckCircle2,
   Users
 } from 'lucide-react';
-import { Teacher } from '../types';
+import { Teacher, UserAccount } from '../types';
+import { NavigationHeader } from '../components/NavigationHeader';
 
 interface TeacherDirectoryViewProps {
   teachers: Teacher[];
   isAdmin: boolean;
+  onNavigateHome: () => void;
+  onNavigateBack: () => void;
+  currentUser?: UserAccount | null;
+  onLogout?: () => void;
+  onOpenAuth?: () => void;
   onAddTeacher: () => void;
   onEditTeacher: (teacher: Teacher) => void;
   onDeleteTeacher: (teacher: Teacher) => void;
@@ -32,6 +38,11 @@ interface TeacherDirectoryViewProps {
 export const TeacherDirectoryView: React.FC<TeacherDirectoryViewProps> = ({
   teachers,
   isAdmin,
+  onNavigateHome,
+  onNavigateBack,
+  currentUser,
+  onLogout,
+  onOpenAuth,
   onAddTeacher,
   onEditTeacher,
   onDeleteTeacher,
@@ -67,51 +78,58 @@ export const TeacherDirectoryView: React.FC<TeacherDirectoryViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      
-      {/* Header & Primary Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Faculty Directory & Course Instructors</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Department of Computer Science & Engineering (AI & ML) • Cabin Locations, Course Mappings & Office Hours
-          </p>
-        </div>
+      {/* Navigation Header with Home, Back, Breadcrumbs, and Logout */}
+      <NavigationHeader
+        title="Faculty Directory & Course Instructors"
+        subtitle="Department of Computer Science & Engineering (AI & ML) • Cabin Locations, Course Mappings & Office Hours"
+        breadcrumbs={[
+          { label: 'Home', onClick: onNavigateHome },
+          { label: 'Faculty Directory', active: true },
+        ]}
+        portalType={currentUser?.role === 'admin' ? 'admin' : currentUser?.role === 'student' ? 'student' : 'general'}
+        activeAdminTab="teachers"
+        currentUser={currentUser}
+        onNavigateHome={onNavigateHome}
+        onNavigateBack={onNavigateBack}
+        onLogout={onLogout}
+        onOpenAuth={onOpenAuth}
+        actions={
+          <div className="flex items-center gap-2">
+            {/* View toggle (Grid vs Table) */}
+            <div className="flex items-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <button
+                onClick={() => setViewMode('cards')}
+                className={`p-1.5 rounded-lg transition ${
+                  viewMode === 'cards' ? 'bg-indigo-50 text-indigo-700 shadow-xs' : 'text-slate-400 hover:text-slate-700'
+                }`}
+                title="Cards View"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`p-1.5 rounded-lg transition ${
+                  viewMode === 'table' ? 'bg-indigo-50 text-indigo-700 shadow-xs' : 'text-slate-400 hover:text-slate-700'
+                }`}
+                title="Table View"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
 
-        <div className="flex items-center gap-2.5">
-          {/* View toggle (Grid vs Table) */}
-          <div className="flex items-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs">
-            <button
-              onClick={() => setViewMode('cards')}
-              className={`p-1.5 rounded-lg transition ${
-                viewMode === 'cards' ? 'bg-indigo-50 text-indigo-700 shadow-xs' : 'text-slate-400 hover:text-slate-700'
-              }`}
-              title="Cards View"
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-lg transition ${
-                viewMode === 'table' ? 'bg-indigo-50 text-indigo-700 shadow-xs' : 'text-slate-400 hover:text-slate-700'
-              }`}
-              title="Table View"
-            >
-              <List className="w-4 h-4" />
-            </button>
+            {isAdmin && (
+              <button
+                onClick={onAddTeacher}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-95 transition"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Faculty</span>
+              </button>
+            )}
           </div>
+        }
+      />
 
-          {/* Add Teacher Button */}
-          <button
-            onClick={onAddTeacher}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-95 transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Faculty Member</span>
-          </button>
-        </div>
-      </div>
 
       {/* KPI STAT CARDS */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

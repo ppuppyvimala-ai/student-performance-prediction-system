@@ -2,14 +2,30 @@ import React from 'react';
 import { BarChart3, TrendingUp, Award, Users, Clock, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
 import '../utils/chartSetup';
-import { Student, AnalyticsOverview } from '../types';
+import { Student, AnalyticsOverview, UserAccount } from '../types';
+import { NavigationHeader, AdminModuleTab } from '../components/NavigationHeader';
 
 interface AnalyticsViewProps {
   students: Student[];
   analytics: AnalyticsOverview | null;
+  onNavigateHome: () => void;
+  onNavigateBack: () => void;
+  onSelectAdminTab?: (tab: AdminModuleTab) => void;
+  currentUser?: UserAccount | null;
+  onLogout?: () => void;
+  onOpenAuth?: () => void;
 }
 
-export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ students, analytics }) => {
+export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
+  students,
+  analytics,
+  onNavigateHome,
+  onNavigateBack,
+  onSelectAdminTab,
+  currentUser,
+  onLogout,
+  onOpenAuth,
+}) => {
   const categoryCounts = analytics?.categoryCounts || {
     Excellent: 0,
     Good: 0,
@@ -104,16 +120,23 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ students, analytic
 
   return (
     <div className="space-y-6 pb-12">
-      
-      {/* Title */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <span>Departmental Academic Analytics & ML Correlations</span>
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          B.Tech CSE AIML • Multi-variable educational analytics and factor correlation curves
-        </p>
-      </div>
+      {/* Navigation Header with Home, Back, Breadcrumbs, and Logout */}
+      <NavigationHeader
+        title="Departmental Academic Analytics & ML Correlations"
+        subtitle="B.Tech CSE AIML • Multi-variable educational analytics, category distributions, and factor correlations"
+        breadcrumbs={[
+          { label: 'Home', onClick: onNavigateHome },
+          { label: 'Academic Analytics', active: true },
+        ]}
+        portalType={currentUser?.role === 'admin' ? 'admin' : currentUser?.role === 'student' ? 'student' : 'general'}
+        activeAdminTab="analytics"
+        onSelectAdminTab={onSelectAdminTab}
+        currentUser={currentUser}
+        onNavigateHome={onNavigateHome}
+        onNavigateBack={onNavigateBack}
+        onLogout={onLogout}
+        onOpenAuth={onOpenAuth}
+      />
 
       {/* Top Aggregates */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

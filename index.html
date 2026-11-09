@@ -19,6 +19,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      // Suppress benign Vite HMR WebSocket errors in sandbox iframe environment
+      window.addEventListener('unhandledrejection', function(e) {
+        if (e.reason && (
+          (typeof e.reason.message === 'string' && (e.reason.message.includes('WebSocket') || e.reason.message.includes('vite:ws'))) ||
+          (e.reason.stack && e.reason.stack.includes('@vite/client'))
+        )) {
+          e.preventDefault();
+        }
+      });
+      window.addEventListener('error', function(e) {
+        if ((e.message && e.message.includes('WebSocket')) || (e.filename && e.filename.includes('@vite/client'))) {
+          e.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white min-h-screen">
     <div id="root"></div>

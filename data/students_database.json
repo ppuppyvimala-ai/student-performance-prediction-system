@@ -93,7 +93,7 @@
     {
       "id": "std_1794074657242",
       "rollNo": "RA2511026050262",
-      "name": "sita",
+      "name": "Sita Lakshmi",
       "email": "vv6222@srmist.edu.in",
       "phone": "7569360451",
       "gender": "Male",
@@ -105,7 +105,7 @@
         "id": "acad_1794074657242",
         "studentId": "std_1794074657242",
         "semester": 3,
-        "attendancePercent": 88.5,
+        "attendancePercent": 88,
         "studyHoursPerWeek": 14,
         "internalTest1": 38,
         "internalTest2": 40,
@@ -176,16 +176,16 @@
           }
         ],
         "notes": "Newly enrolled academic record.",
-        "updatedAt": "2026-11-07T18:50:25.534Z"
+        "updatedAt": "2026-11-08T07:55:20.040Z"
       },
       "latestPrediction": {
-        "id": "pred_1794077425535_avwr",
+        "id": "pred_1794124520041_td0p",
         "studentId": "std_1794074657242",
-        "predictedScore": 80.4,
-        "predictedSgpa": 8.04,
+        "predictedScore": 80.3,
+        "predictedSgpa": 8.03,
         "category": "Good",
         "riskLevel": "Low",
-        "confidenceScore": 93.2,
+        "confidenceScore": 94.3,
         "featureContributions": [
           {
             "feature": "Internal Tests (IAT 1 & 2)",
@@ -197,7 +197,7 @@
             "feature": "Attendance Record",
             "impact": 20,
             "status": "Positive",
-            "detail": "88.5% attendance (Eligible for finals)."
+            "detail": "88% attendance (Eligible for finals)."
           },
           {
             "feature": "Study Hours Commitment",
@@ -222,9 +222,55 @@
           "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
           "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
         ],
-        "simulatedAt": "2026-11-07T18:50:25.535Z"
+        "simulatedAt": "2026-11-08T07:55:20.041Z"
       },
       "predictionHistory": [
+        {
+          "id": "pred_1794124520041_td0p",
+          "studentId": "std_1794074657242",
+          "predictedScore": 80.3,
+          "predictedSgpa": 8.03,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.3,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 29,
+              "status": "Positive",
+              "detail": "Average: 78.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 20,
+              "status": "Positive",
+              "detail": "88% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "14 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.80 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "80% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-08T07:55:20.041Z"
+        },
         {
           "id": "pred_1794077425535_avwr",
           "studentId": "std_1794074657242",
@@ -1629,10 +1675,10 @@
         "id": "acad_8",
         "studentId": "std_8",
         "semester": 4,
-        "attendancePercent": 82,
+        "attendancePercent": 84.7,
         "studyHoursPerWeek": 16,
-        "internalTest1": 39,
-        "internalTest2": 42,
+        "internalTest1": 42,
+        "internalTest2": 45,
         "assignmentScore": 84,
         "labScore": 88,
         "previousCgpa": 7.92,
@@ -1645,8 +1691,8 @@
             "assignment": 43,
             "credits": 4,
             "totalClasses": 45,
-            "attendedClasses": 34,
-            "attendancePercent": 75.6
+            "attendedClasses": 40,
+            "attendancePercent": 88.9
           },
           {
             "code": "AI202",
@@ -1700,32 +1746,32 @@
           }
         ],
         "notes": "Consistent improvement in internal tests; strong lab records.",
-        "updatedAt": "2026-11-07T17:45:25.955Z"
+        "updatedAt": "2026-11-08T08:09:43.541Z"
       },
       "latestPrediction": {
-        "id": "pred_1794073525956_ibnw",
+        "id": "pred_1794125383542_ir40",
         "studentId": "std_8",
-        "predictedScore": 81.9,
-        "predictedSgpa": 8.19,
+        "predictedScore": 84.2,
+        "predictedSgpa": 8.42,
         "category": "Good",
         "riskLevel": "Low",
-        "confidenceScore": 94.2,
+        "confidenceScore": 94.8,
         "featureContributions": [
           {
             "feature": "Internal Tests (IAT 1 & 2)",
-            "impact": 30,
+            "impact": 31,
             "status": "Positive",
-            "detail": "Average: 81.0/100 across both midterms."
+            "detail": "Average: 87.0/100 across both midterms."
           },
           {
             "feature": "Attendance Record",
             "impact": 18,
             "status": "Positive",
-            "detail": "82% attendance (Eligible for finals)."
+            "detail": "84.7% attendance (Eligible for finals)."
           },
           {
             "feature": "Study Hours Commitment",
-            "impact": 14,
+            "impact": 13,
             "status": "Positive",
             "detail": "16 hrs/week devoted to self-study."
           },
@@ -1746,9 +1792,101 @@
           "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
           "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
         ],
-        "simulatedAt": "2026-11-07T17:45:25.956Z"
+        "simulatedAt": "2026-11-08T08:09:43.542Z"
       },
       "predictionHistory": [
+        {
+          "id": "pred_1794125383542_ir40",
+          "studentId": "std_8",
+          "predictedScore": 84.2,
+          "predictedSgpa": 8.42,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.8,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 31,
+              "status": "Positive",
+              "detail": "Average: 87.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "84.7% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "16 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.92 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "84% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-08T08:09:43.542Z"
+        },
+        {
+          "id": "pred_1794125379564_gzx2",
+          "studentId": "std_8",
+          "predictedScore": 84.3,
+          "predictedSgpa": 8.43,
+          "category": "Good",
+          "riskLevel": "Low",
+          "confidenceScore": 94.4,
+          "featureContributions": [
+            {
+              "feature": "Internal Tests (IAT 1 & 2)",
+              "impact": 31,
+              "status": "Positive",
+              "detail": "Average: 87.0/100 across both midterms."
+            },
+            {
+              "feature": "Attendance Record",
+              "impact": 18,
+              "status": "Positive",
+              "detail": "85% attendance (Eligible for finals)."
+            },
+            {
+              "feature": "Study Hours Commitment",
+              "impact": 13,
+              "status": "Positive",
+              "detail": "16 hrs/week devoted to self-study."
+            },
+            {
+              "feature": "Prior Academic Baseline (CGPA)",
+              "impact": 21,
+              "status": "Positive",
+              "detail": "Previous CGPA: 7.92 / 10.0."
+            },
+            {
+              "feature": "Assignments & Projects",
+              "impact": 10,
+              "status": "Positive",
+              "detail": "84% completion on programming assignments."
+            }
+          ],
+          "recommendations": [
+            "Exceptional consistency! Maintain current study cadence and practice previous university question papers to secure top percentile.",
+            "Consider participating in departmental hackathons or open-source AIML projects to expand practical mastery."
+          ],
+          "simulatedAt": "2026-11-08T08:09:39.564Z"
+        },
         {
           "id": "pred_1794073525956_ibnw",
           "studentId": "std_8",

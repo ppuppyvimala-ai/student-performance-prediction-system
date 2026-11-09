@@ -21,13 +21,62 @@ import { SubjectAttendanceModal } from './components/SubjectAttendanceModal';
 
 import { HomeView } from './views/HomeView';
 import { AdminDashboardView } from './views/AdminDashboardView';
+import { AdminStudentDetailsView } from './views/AdminStudentDetailsView';
 import { StudentDashboardView } from './views/StudentDashboardView';
 import { AnalyticsView } from './views/AnalyticsView';
 import { TeacherDirectoryView } from './views/TeacherDirectoryView';
+import { ReportsView } from './views/ReportsView';
+import { AppTabType } from './components/Navbar';
+import { AdminModuleTab } from './components/NavigationHeader';
+
+const getInitialRoute = (): { tab: AppTabType; subTab?: AdminModuleTab; studentId?: string } => {
+  if (typeof window === 'undefined') return { tab: 'home' };
+  const rawHash = window.location.hash || '';
+  if (!rawHash || rawHash === '#' || rawHash === '#/' || rawHash === '#/home') {
+    return { tab: 'home' };
+  }
+  const clean = rawHash.replace(/^#\/?/, '');
+  const parts = clean.split('/').filter(Boolean);
+
+  if (parts.length === 0 || parts[0] === 'home') return { tab: 'home' };
+
+  if (parts[0] === 'admin') {
+    if (parts[1] === 'student' && parts[2]) {
+      return { tab: 'admin-student-details', studentId: parts[2] };
+    }
+    const sub = (parts[1] && ['records', 'attendance', 'marks', 'batch-predict'].includes(parts[1]))
+      ? (parts[1] as AdminModuleTab)
+      : 'records';
+    return { tab: 'admin', subTab: sub };
+  }
+
+  if (parts[0] === 'student') {
+    return { tab: 'student', studentId: parts[1] };
+  }
+
+  if (parts[0] === 'teachers') return { tab: 'teachers' };
+  if (parts[0] === 'analytics') return { tab: 'analytics' };
+  if (parts[0] === 'reports') return { tab: 'reports', studentId: parts[1] };
+  if (parts[0] === 'what-if') return { tab: 'what-if' };
+  if (parts[0] === 'model') return { tab: 'model' };
+
+  return { tab: 'home' };
+};
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'admin' | 'student' | 'teachers' | 'analytics' | 'what-if' | 'model'>('home');
-  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  const initialRoute = getInitialRoute();
+  const [activeTab, setActiveTab] = useState<AppTabType>(initialRoute.tab);
+  const [adminSubTab, setAdminSubTab] = useState<AdminModuleTab>(initialRoute.subTab || 'records');
+  const [navigationHistory, setNavigationHistory] = useState<string[]>([window.location.hash || '#/home']);
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => {
+    try {
+      const saved = localStorage.getItem('edupredict_current_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [authModalRole, setAuthModalRole] = useState<'admin' | 'student'>('student');
   const [students, setStudents] = useState<Student[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -63,6 +112,22 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  // Sync currentUser in localStorage for refresh persistence
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('edupredict_current_user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('edupredict_current_user');
+    }
+  }, [currentUser]);
+
+  // Set default #/home if root hash is empty
+  useEffect(() => {
+    if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#/') {
+      window.history.replaceState({ tab: 'home' }, '', '#/home');
+    }
+  }, []);
+
   // Initial Data Load
   const loadData = async () => {
     setLoading(true);
@@ -76,7 +141,10 @@ export default function App() {
       setAnalytics(analyticsRes);
       setTeachers(teachersRes.teachers);
 
-      if (!selectedStudent && studentsRes.students.length > 0) {
+      if (initialRoute.studentId) {
+        const found = studentsRes.students.find((s) => s.id === initialRoute.studentId);
+        if (found) setSelectedStudent(found);
+      } else if (!selectedStudent && studentsRes.students.length > 0) {
         setSelectedStudent(studentsRes.students[0]);
       }
     } catch (err) {
@@ -92,19 +160,27 @@ export default function App() {
 
   // Handlers for Student CRUD
   const handleSaveStudent = async (data: Partial<Student>) => {
-    if (editingStudent) {
-      const updated = await api.updateStudent(editingStudent.id, data);
-      setStudents((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-      if (selectedStudent?.id === updated.id) setSelectedStudent(updated);
-      showToast(`Student record for ${updated.name} updated with new ML prediction.`);
-    } else {
-      const created = await api.createStudent(data);
-      setStudents((prev) => [created, ...prev]);
-      setSelectedStudent(created);
-      showToast(`Student ${created.name} successfully enrolled and evaluated.`);
+    try {
+      if (editingStudent) {
+        const updated = await api.updateStudent(editingStudent.id, data);
+        const fresh = await api.getStudents();
+        setStudents(fresh.students);
+        const freshStudent = fresh.students.find((s) => s.id === updated.id) || updated;
+        if (selectedStudent?.id === updated.id) setSelectedStudent(freshStudent);
+        showToast(`Student record for ${updated.name} updated in database with new ML prediction.`);
+      } else {
+        const created = await api.createStudent(data);
+        const fresh = await api.getStudents();
+        setStudents(fresh.students);
+        setSelectedStudent(created);
+        showToast(`Student ${created.name} successfully enrolled and evaluated.`);
+      }
+      // Refresh analytics
+      api.getAnalytics().then(setAnalytics).catch(console.error);
+    } catch (err: any) {
+      showToast(err.message || 'Failed to save student record');
+      throw err;
     }
-    // Refresh analytics
-    api.getAnalytics().then(setAnalytics).catch(console.error);
   };
 
   const handleConfirmDelete = async () => {
@@ -170,9 +246,11 @@ export default function App() {
     updatedSubjects: { code: string; totalClasses: number; attendedClasses: number }[]
   ) => {
     const updated = await api.updateSubjectAttendance(studentId, updatedSubjects);
-    setStudents((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    const fresh = await api.getStudents();
+    setStudents(fresh.students);
+    const freshStudent = fresh.students.find((s) => s.id === updated.id) || updated;
     if (selectedStudent?.id === updated.id) {
-      setSelectedStudent(updated);
+      setSelectedStudent(freshStudent);
     }
     showToast(`Subject-wise attendance updated for ${updated.name}!`);
     api.getAnalytics().then(setAnalytics).catch(console.error);
@@ -195,45 +273,255 @@ export default function App() {
     }
   };
 
+  // Synchronize URL Hash and Browser History
+  useEffect(() => {
+    const handlePopState = () => {
+      const rawHash = window.location.hash || '#/home';
+      const clean = rawHash.replace(/^#\/?/, '');
+      const parts = clean.split('/').filter(Boolean);
+
+      if (parts.length === 0 || parts[0] === 'home') {
+        setActiveTab('home');
+        return;
+      }
+
+      if (parts[0] === 'admin') {
+        if (currentUser?.role === 'student') {
+          setActiveTab('student');
+          return;
+        }
+        if (parts[1] === 'student' && parts[2]) {
+          const s = students.find((st) => st.id === parts[2]);
+          if (s) setSelectedStudent(s);
+          setActiveTab('admin-student-details');
+          return;
+        }
+        if (parts[1] && ['records', 'attendance', 'marks', 'batch-predict'].includes(parts[1])) {
+          setAdminSubTab(parts[1] as AdminModuleTab);
+        }
+        setActiveTab('admin');
+        return;
+      }
+
+      if (parts[0] === 'student') {
+        if (parts[1]) {
+          const s = students.find((st) => st.id === parts[1]);
+          if (s) setSelectedStudent(s);
+        }
+        setActiveTab('student');
+        return;
+      }
+
+      if (parts[0] === 'teachers') {
+        setActiveTab('teachers');
+        return;
+      }
+
+      if (parts[0] === 'analytics') {
+        setActiveTab('analytics');
+        return;
+      }
+
+      if (parts[0] === 'reports') {
+        if (parts[1]) {
+          const s = students.find((st) => st.id === parts[1]);
+          if (s) setSelectedStudent(s);
+        }
+        setActiveTab('reports');
+        return;
+      }
+
+      if (parts[0] === 'what-if') {
+        setWhatIfModalOpen(true);
+        return;
+      }
+
+      if (parts[0] === 'model') {
+        setModelModalOpen(true);
+        return;
+      }
+
+      setActiveTab('home');
+    };
+
+    handlePopState();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [students, currentUser]);
+
+  const navigateTo = (
+    tab: AppTabType,
+    options?: {
+      subTab?: AdminModuleTab;
+      student?: Student;
+      replace?: boolean;
+    }
+  ) => {
+    if (currentUser?.role === 'student' && (tab === 'admin' || tab === 'admin-student-details')) {
+      showToast('Access restricted: Faculty Admin credentials required for Admin Portal.');
+      tab = 'student';
+    }
+
+    if (tab === 'what-if') {
+      setWhatIfModalOpen(true);
+      return;
+    }
+
+    if (tab === 'model') {
+      setModelModalOpen(true);
+      return;
+    }
+
+    let targetHash = `#/${tab}`;
+    if (tab === 'admin' && options?.subTab) {
+      targetHash = `#/admin/${options.subTab}`;
+      setAdminSubTab(options.subTab);
+    } else if (tab === 'admin-student-details' && options?.student) {
+      targetHash = `#/admin/student/${options.student.id}`;
+      setSelectedStudent(options.student);
+    } else if (tab === 'reports' && options?.student) {
+      targetHash = `#/reports/${options.student.id}`;
+      setSelectedStudent(options.student);
+    } else if (tab === 'student' && options?.student) {
+      targetHash = `#/student/${options.student.id}`;
+      setSelectedStudent(options.student);
+    }
+
+    setActiveTab(tab);
+
+    if (options?.replace) {
+      window.history.replaceState({ tab, targetHash }, '', targetHash);
+    } else {
+      window.history.pushState({ tab, targetHash }, '', targetHash);
+      setNavigationHistory((prev) => [...prev, targetHash]);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigateHome = () => {
+    navigateTo('home');
+  };
+
+  const handleNavigateBack = () => {
+    if (window.history.length > 1 && navigationHistory.length > 1) {
+      window.history.back();
+    } else {
+      if (activeTab === 'admin-student-details') {
+        navigateTo('admin', { subTab: 'records' });
+      } else if (activeTab === 'admin') {
+        if (adminSubTab !== 'records') {
+          navigateTo('admin', { subTab: 'records' });
+        } else {
+          navigateTo('home');
+        }
+      } else if (activeTab === 'student') {
+        navigateTo('home');
+      } else if (activeTab === 'teachers' || activeTab === 'analytics' || activeTab === 'reports') {
+        if (currentUser?.role === 'admin') {
+          navigateTo('admin', { subTab: 'records' });
+        } else {
+          navigateTo('home');
+        }
+      } else {
+        navigateTo('home');
+      }
+    }
+  };
+
   const handleAuthSuccess = (user: UserAccount, student?: Student) => {
     setCurrentUser(user);
     if (student) {
       setSelectedStudent(student);
-      setActiveTab('student');
+      navigateTo('student', { student });
       showToast(`Welcome back, ${student.name}!`);
     } else {
-      setActiveTab('admin');
+      navigateTo('admin', { subTab: 'records' });
       showToast(`Logged in as Faculty Admin (${user.name}).`);
+    }
+  };
+
+  const [studentSection, setStudentSection] = useState<string>('scorecard');
+
+  const handleSelectAdminTab = (subTab: AdminModuleTab) => {
+    if (subTab === 'teachers') {
+      navigateTo('teachers');
+    } else if (subTab === 'analytics') {
+      navigateTo('analytics');
+    } else if (subTab === 'reports') {
+      navigateTo('reports');
+    } else {
+      navigateTo('admin', { subTab });
+    }
+  };
+
+  const handleSelectStudentSection = (section: string) => {
+    setStudentSection(section);
+    if (section === 'what-if') {
+      setWhatIfModalOpen(true);
+    } else if (section === 'report') {
+      if (selectedStudent) {
+        navigateTo('reports', { student: selectedStudent });
+      } else {
+        navigateTo('reports');
+      }
+    } else if (section === 'teachers') {
+      navigateTo('teachers');
+    } else {
+      if (activeTab !== 'student') {
+        navigateTo('student');
+      }
+      setTimeout(() => {
+        let targetId = '';
+        if (section === 'scorecard') targetId = 'student-scorecard';
+        else if (section === 'attendance') targetId = 'student-attendance';
+        else if (section === 'marks') targetId = 'student-marks';
+        else if (section === 'recommendations') targetId = 'student-recommendations';
+        if (targetId) {
+          const el = document.getElementById(targetId);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 80);
     }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
+    navigateTo('home');
     showToast('Signed out of session.');
   };
 
-  const handleSelectTab = (tab: 'home' | 'admin' | 'student' | 'teachers' | 'analytics' | 'what-if' | 'model') => {
-    if (tab === 'what-if') {
-      setWhatIfModalOpen(true);
-      return;
-    }
-    if (tab === 'model') {
-      setModelModalOpen(true);
-      return;
-    }
-    setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleViewStudentDetails = (student: Student) => {
+    navigateTo('admin-student-details', { student });
+  };
+
+  const handleSaveStudentDetailsDirect = async (studentId: string, data: Partial<Student>): Promise<Student> => {
+    const updated = await api.updateStudent(studentId, data);
+    const fresh = await api.getStudents();
+    setStudents(fresh.students);
+    const freshStudent = fresh.students.find((s) => s.id === updated.id) || updated;
+    setSelectedStudent(freshStudent);
+    showToast(`Student record for ${updated.name} updated with latest prediction.`);
+    api.getAnalytics().then(setAnalytics).catch(console.error);
+    return freshStudent;
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-indigo-600 selection:text-white">
       
-      {/* Top Navbar */}
+      {/* Top Fixed Navbar (Permanently pinned at top with Home, Back, Admin Dashboard Navigation, and Logout) */}
       <Navbar
         currentUser={currentUser}
         activeStudent={selectedStudent}
         activeTab={activeTab}
-        onSelectTab={handleSelectTab}
+        adminSubTab={adminSubTab}
+        onSelectTab={(tab) => navigateTo(tab)}
+        onSelectAdminTab={handleSelectAdminTab}
+        activeStudentSection={studentSection}
+        onSelectStudentSection={handleSelectStudentSection}
+        onNavigateHome={handleNavigateHome}
+        onNavigateBack={handleNavigateBack}
+        canGoBack={navigationHistory.length > 1 || activeTab !== 'home'}
         onOpenAuth={() => setAuthModalOpen(true)}
         onLogout={handleLogout}
         onResetData={handleResetData}
@@ -245,14 +533,14 @@ export default function App() {
 
       {/* Floating Action Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-4 z-50 flex items-center gap-2 rounded-2xl bg-slate-900/95 backdrop-blur-md px-4 py-3 text-xs sm:text-sm font-semibold text-white shadow-2xl border border-slate-700 animate-in slide-in-from-top duration-200">
+        <div className="fixed top-28 right-4 z-50 flex items-center gap-2 rounded-2xl bg-slate-900/95 backdrop-blur-md px-4 py-3 text-xs sm:text-sm font-semibold text-white shadow-2xl border border-slate-700 animate-in slide-in-from-top duration-200">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20 sm:pb-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20 sm:pb-8">
         {loading ? (
           <div className="py-24 text-center space-y-4">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
@@ -262,11 +550,14 @@ export default function App() {
           <>
             {activeTab === 'home' && (
               <HomeView
-                onNavigate={handleSelectTab}
+                onNavigate={(tab) => navigateTo(tab)}
                 onOpenAuth={() => setAuthModalOpen(true)}
                 onOpenModelModal={() => setModelModalOpen(true)}
                 students={students}
-                onSelectStudent={(s) => setSelectedStudent(s)}
+                onSelectStudent={(s) => {
+                  setSelectedStudent(s);
+                  navigateTo('student', { student: s });
+                }}
               />
             )}
 
@@ -275,7 +566,19 @@ export default function App() {
                 students={students}
                 analytics={analytics}
                 teacherCount={teachers.length}
-                onNavigateToTeachers={() => setActiveTab('teachers')}
+                initialSubTab={adminSubTab}
+                onSubTabChange={(sub) => {
+                  setAdminSubTab(sub);
+                  window.history.replaceState({}, '', `#/admin/${sub}`);
+                }}
+                onNavigateHome={handleNavigateHome}
+                onNavigateBack={handleNavigateBack}
+                onNavigateToTeachers={() => navigateTo('teachers')}
+                onNavigateToAnalytics={() => navigateTo('analytics')}
+                onNavigateToReports={() => navigateTo('reports')}
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
                 onAddStudent={() => {
                   setEditingStudent(null);
                   setStudentModalOpen(true);
@@ -289,16 +592,44 @@ export default function App() {
                   setDeleteModalOpen(true);
                 }}
                 onViewReport={(s) => {
-                  setReportStudent(s);
-                  setReportModalOpen(true);
+                  setSelectedStudent(s);
+                  navigateTo('reports', { student: s });
                 }}
                 onRunPrediction={handleRunSinglePrediction}
                 onBatchPredict={handleBatchPredict}
                 onSelectStudent={(s) => setSelectedStudent(s)}
-                onNavigateToStudentView={() => setActiveTab('student')}
+                onViewStudentDetails={handleViewStudentDetails}
                 onManageAttendance={(s) => {
                   setSelectedAttendanceStudent(s);
                   setAttendanceModalOpen(true);
+                }}
+              />
+            )}
+
+            {activeTab === 'admin-student-details' && selectedStudent && (
+              <AdminStudentDetailsView
+                student={selectedStudent}
+                allStudents={students}
+                teachers={teachers}
+                onBackToAdmin={() => navigateTo('admin', { subTab: 'records' })}
+                onNavigateHome={handleNavigateHome}
+                onSelectAdminTab={(tab) => navigateTo('admin', { subTab: tab })}
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
+                onSaveStudent={handleSaveStudentDetailsDirect}
+                onRunPrediction={handleRunSinglePrediction}
+                onViewReport={(s) => {
+                  setSelectedStudent(s);
+                  navigateTo('reports', { student: s });
+                }}
+                onDeleteStudent={(s) => {
+                  setStudentToDelete(s);
+                  setDeleteModalOpen(true);
+                }}
+                onSelectOtherStudent={(s) => {
+                  setSelectedStudent(s);
+                  navigateTo('admin-student-details', { student: s, replace: true });
                 }}
               />
             )}
@@ -307,15 +638,20 @@ export default function App() {
               <StudentDashboardView
                 students={students}
                 currentStudent={selectedStudent}
+                currentUser={currentUser}
                 teachers={teachers}
+                onNavigateHome={handleNavigateHome}
+                onNavigateBack={handleNavigateBack}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
                 onSelectStudent={(s) => setSelectedStudent(s)}
                 onOpenWhatIf={() => setWhatIfModalOpen(true)}
                 onViewReport={(s) => {
-                  setReportStudent(s);
-                  setReportModalOpen(true);
+                  setSelectedStudent(s);
+                  navigateTo('reports', { student: s });
                 }}
                 onRunPrediction={handleRunSinglePrediction}
-                onNavigateToFaculty={() => setActiveTab('teachers')}
+                onNavigateToFaculty={() => navigateTo('teachers')}
               />
             )}
 
@@ -323,6 +659,11 @@ export default function App() {
               <TeacherDirectoryView
                 teachers={teachers}
                 isAdmin={currentUser?.role === 'admin' || true}
+                onNavigateHome={handleNavigateHome}
+                onNavigateBack={handleNavigateBack}
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
                 onAddTeacher={() => {
                   setEditingTeacher(null);
                   setTeacherModalOpen(true);
@@ -339,7 +680,31 @@ export default function App() {
             )}
 
             {activeTab === 'analytics' && (
-              <AnalyticsView students={students} analytics={analytics} />
+              <AnalyticsView
+                students={students}
+                analytics={analytics}
+                onNavigateHome={handleNavigateHome}
+                onNavigateBack={handleNavigateBack}
+                onSelectAdminTab={(tab) => navigateTo('admin', { subTab: tab })}
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
+              />
+            )}
+
+            {activeTab === 'reports' && (
+              <ReportsView
+                students={students}
+                selectedStudent={selectedStudent}
+                onSelectStudent={(s) => setSelectedStudent(s)}
+                onNavigateHome={handleNavigateHome}
+                onNavigateBack={handleNavigateBack}
+                onNavigateToAdmin={() => navigateTo('admin', { subTab: 'records' })}
+                onSelectAdminTab={(tab) => navigateTo('admin', { subTab: tab })}
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                onOpenAuth={() => setAuthModalOpen(true)}
+              />
             )}
           </>
         )}
@@ -366,7 +731,7 @@ export default function App() {
       </footer>
 
       {/* Mobile Bottom Navigation (for iPad & Mobile PWA) */}
-      <MobileBottomNav activeTab={activeTab} onSelectTab={handleSelectTab} />
+      <MobileBottomNav activeTab={activeTab} onSelectTab={(tab) => navigateTo(tab)} currentUser={currentUser} />
 
       {/* Modals */}
       <AuthModal

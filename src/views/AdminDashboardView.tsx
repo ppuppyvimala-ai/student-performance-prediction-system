@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   Search,
@@ -19,18 +19,30 @@ import {
   UserCheck,
   CalendarCheck,
   Calendar,
-  Percent
+  Percent,
+  Edit3,
+  Sliders
 } from 'lucide-react';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import '../utils/chartSetup';
-import { Student, AnalyticsOverview } from '../types';
+import { Student, AnalyticsOverview, UserAccount } from '../types';
 import { getCategoryBadge, getRiskBadge, exportStudentsToCsv } from '../utils/formatters';
+import { NavigationHeader, AdminModuleTab } from '../components/NavigationHeader';
 
 interface AdminDashboardViewProps {
   students: Student[];
   analytics: AnalyticsOverview | null;
   teacherCount?: number;
+  initialSubTab?: AdminModuleTab;
+  onSubTabChange?: (tab: AdminModuleTab) => void;
+  onNavigateHome: () => void;
+  onNavigateBack: () => void;
   onNavigateToTeachers: () => void;
+  onNavigateToAnalytics?: () => void;
+  onNavigateToReports?: () => void;
+  currentUser?: UserAccount | null;
+  onLogout?: () => void;
+  onOpenAuth?: () => void;
   onAddStudent: () => void;
   onEditStudent: (student: Student) => void;
   onDeleteStudent: (student: Student) => void;
@@ -38,7 +50,7 @@ interface AdminDashboardViewProps {
   onRunPrediction: (student: Student) => Promise<void>;
   onBatchPredict: () => Promise<void>;
   onSelectStudent: (student: Student) => void;
-  onNavigateToStudentView: () => void;
+  onViewStudentDetails: (student: Student) => void;
   onManageAttendance: (student: Student) => void;
 }
 
@@ -46,7 +58,16 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   students,
   analytics,
   teacherCount = 6,
+  initialSubTab = 'records',
+  onSubTabChange,
+  onNavigateHome,
+  onNavigateBack,
   onNavigateToTeachers,
+  onNavigateToAnalytics,
+  onNavigateToReports,
+  currentUser,
+  onLogout,
+  onOpenAuth,
   onAddStudent,
   onEditStudent,
   onDeleteStudent,
@@ -54,10 +75,34 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   onRunPrediction,
   onBatchPredict,
   onSelectStudent,
-  onNavigateToStudentView,
+  onViewStudentDetails,
   onManageAttendance,
 }) => {
-  const [adminSubTab, setAdminSubTab] = useState<'records' | 'attendance'>('records');
+  const [adminSubTab, setAdminSubTab] = useState<AdminModuleTab>(initialSubTab);
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setAdminSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
+
+  const handleTabSwitch = (tab: AdminModuleTab) => {
+    if (tab === 'teachers') {
+      onNavigateToTeachers();
+      return;
+    }
+    if (tab === 'analytics' && onNavigateToAnalytics) {
+      onNavigateToAnalytics();
+      return;
+    }
+    if (tab === 'reports' && onNavigateToReports) {
+      onNavigateToReports();
+      return;
+    }
+    setAdminSubTab(tab);
+    if (onSubTabChange) onSubTabChange(tab);
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedRisk, setSelectedRisk] = useState<string>('ALL');
@@ -212,88 +257,54 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      
-      {/* Title & Top Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Faculty & Academic Administration Portal</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            B.Tech CSE AIML • Manage Marks, Attendance, Conduct ML Predictions & Generate Reports
-          </p>
-        </div>
+      {/* Consistent Navigation Header with Home, Back, Breadcrumbs, Admin Menu, and Logout */}
+      <NavigationHeader
+        title="Faculty & Academic Administration Portal"
+        subtitle="Manage student records, edit marks, track attendance, run batch predictions, and generate reports"
+        breadcrumbs={[
+          { label: 'Home', onClick: onNavigateHome },
+          { label: 'Admin Portal', onClick: () => handleTabSwitch('records') },
+          {
+            label:
+              adminSubTab === 'records'
+                ? 'Student Records'
+                : adminSubTab === 'marks'
+                ? 'Marks Management'
+                : adminSubTab === 'attendance'
+                ? 'Subject Attendance'
+                : 'Batch ML Prediction',
+            active: true,
+          },
+        ]}
+        portalType="admin"
+        activeAdminTab={adminSubTab}
+        onSelectAdminTab={handleTabSwitch}
+        currentUser={currentUser}
+        onNavigateHome={onNavigateHome}
+        onNavigateBack={onNavigateBack}
+        onLogout={onLogout}
+        onOpenAuth={onOpenAuth}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => exportStudentsToCsv(filteredStudents)}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 active:scale-95 shadow-2xs transition"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Export CSV</span>
+            </button>
+            <button
+              onClick={onAddStudent}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-95 transition"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Student</span>
+            </button>
+          </div>
+        }
+      />
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            onClick={onNavigateToTeachers}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3.5 py-2 text-xs sm:text-sm font-bold text-indigo-700 hover:bg-indigo-100 active:scale-95 shadow-xs transition"
-          >
-            <UserCheck className="w-4 h-4 text-indigo-600" />
-            <span>Teacher Details ({teacherCount})</span>
-          </button>
-
-          <button
-            onClick={() => exportStudentsToCsv(filteredStudents)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 active:scale-95 shadow-xs transition"
-          >
-            <Download className="w-4 h-4 text-slate-500" />
-            <span>Export CSV</span>
-          </button>
-
-          <button
-            onClick={handleRunBatch}
-            disabled={batching}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-purple-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white shadow-md shadow-purple-600/20 hover:bg-purple-700 active:scale-95 transition disabled:opacity-60"
-          >
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span>{batching ? 'Evaluating Cohort...' : 'Batch ML Predict'}</span>
-          </button>
-
-          <button
-            onClick={onAddStudent}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-95 transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Student Record</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Admin Module Switcher */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/90 rounded-2xl w-fit text-xs font-bold text-slate-600">
-        <button
-          onClick={() => setAdminSubTab('records')}
-          className={`px-4 py-2 rounded-xl transition flex items-center gap-2 ${
-            adminSubTab === 'records'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-          }`}
-        >
-          <Users className="w-4 h-4 text-indigo-600" />
-          <span>Student Records & ML Analytics ({students.length})</span>
-        </button>
-        <button
-          onClick={() => setAdminSubTab('attendance')}
-          className={`px-4 py-2 rounded-xl transition flex items-center gap-2 ${
-            adminSubTab === 'attendance'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-          }`}
-        >
-          <CalendarCheck className="w-4 h-4 text-emerald-600" />
-          <span>Subject-wise Attendance ({students.length})</span>
-        </button>
-        <button
-          onClick={onNavigateToTeachers}
-          className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-white/60 transition flex items-center gap-2"
-        >
-          <UserCheck className="w-4 h-4 text-purple-600" />
-          <span>Teacher Details & Faculty Directory ({teacherCount})</span>
-        </button>
-      </div>
-
-      {adminSubTab === 'records' ? (
+      {adminSubTab === 'records' && (
         <>
           {/* KPI METRIC CARDS */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -490,7 +501,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                         <div
                           onClick={() => {
                             onSelectStudent(s);
-                            onNavigateToStudentView();
+                            onViewStudentDetails(s);
                           }}
                           className="cursor-pointer"
                         >
@@ -569,6 +580,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1">
+                          {/* View Student Details */}
+                          <button
+                            onClick={() => {
+                              onSelectStudent(s);
+                              onViewStudentDetails(s);
+                            }}
+                            title="View Student Details & Marks"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+
                           {/* Re-run ML Prediction */}
                           <button
                             onClick={() => handleSinglePredict(s)}
@@ -597,13 +620,14 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                             <FileText className="w-4 h-4" />
                           </button>
 
-                          {/* Edit */}
+                          {/* Edit Marks & Attendance Button */}
                           <button
                             onClick={() => onEditStudent(s)}
-                            title="Edit Student & Marks"
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-sky-600 hover:bg-sky-50 transition"
+                            title="Edit Student Marks & Attendance"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-bold transition active:scale-95 shadow-2xs"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-3.5 h-3.5 text-sky-600" />
+                            <span>Edit</span>
                           </button>
 
                           {/* Delete */}
@@ -625,7 +649,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
         </div>
       </div>
     </>
-  ) : (
+  )}
+
+  {adminSubTab === 'attendance' && (
     <div className="space-y-6">
       {/* Attendance KPI Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -767,7 +793,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                         <div
                           onClick={() => {
                             onSelectStudent(s);
-                            onNavigateToStudentView();
+                            onViewStudentDetails(s);
                           }}
                           className="cursor-pointer"
                         >
@@ -840,15 +866,25 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                         );
                       })}
 
-                      {/* Edit button */}
+                      {/* Edit buttons */}
                       <td className="py-3.5 px-4 text-right">
-                        <button
-                          onClick={() => onManageAttendance(s)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 text-indigo-700 hover:bg-indigo-100 text-xs font-bold transition active:scale-95 shadow-2xs"
-                        >
-                          <CalendarCheck className="w-3.5 h-3.5" />
-                          <span>Update</span>
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => onEditStudent(s)}
+                            title="Edit Student Marks & Details"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-bold transition active:scale-95 shadow-2xs"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>Edit Marks</span>
+                          </button>
+                          <button
+                            onClick={() => onManageAttendance(s)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 text-indigo-700 hover:bg-indigo-100 text-xs font-bold transition active:scale-95 shadow-2xs"
+                          >
+                            <CalendarCheck className="w-3.5 h-3.5" />
+                            <span>Attendance</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -879,7 +915,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <div
                     onClick={() => {
                       onSelectStudent(s);
-                      onNavigateToStudentView();
+                      onViewStudentDetails(s);
                     }}
                     className="cursor-pointer"
                   >
@@ -958,19 +994,403 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                 </div>
 
                 {/* Card Footer Action */}
-                <div className="pt-2 flex items-center justify-end">
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => onEditStudent(s)}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-sky-200 bg-sky-50 text-sky-700 font-bold text-xs hover:bg-sky-100 transition active:scale-95"
+                  >
+                    <Edit className="w-3.5 h-3.5" />
+                    <span>Edit Marks</span>
+                  </button>
                   <button
                     onClick={() => onManageAttendance(s)}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs hover:bg-indigo-700 transition active:scale-95"
                   >
                     <CalendarCheck className="w-4 h-4" />
-                    <span>Update Subject Attendance</span>
+                    <span>Update Attendance</span>
                   </button>
                 </div>
               </div>
             );
           })
         )}
+      </div>
+    </div>
+  )}
+
+  {/* MARKS MANAGEMENT SUB-TAB */}
+  {adminSubTab === 'marks' && (
+    <div className="space-y-6">
+      {/* Marks Overview KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Enrolled Students</span>
+            <Users className="w-4 h-4 text-indigo-500" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-slate-900">
+            {students.length}
+          </div>
+          <span className="text-[11px] text-slate-500 mt-1 block">Active Academic Profiles</span>
+        </div>
+
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Cohort Mean IAT 1</span>
+            <Award className="w-4 h-4 text-purple-500" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-purple-700">
+            {students.length > 0
+              ? (students.reduce((acc, s) => acc + s.academic.internalTest1, 0) / students.length).toFixed(1)
+              : '0.0'} <span className="text-xs font-normal text-slate-400">/ 50</span>
+          </div>
+          <span className="text-[11px] text-slate-500 mt-1 block">Midterm Assessment 1</span>
+        </div>
+
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Cohort Mean IAT 2</span>
+            <Award className="w-4 h-4 text-sky-500" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-sky-700">
+            {students.length > 0
+              ? (students.reduce((acc, s) => acc + s.academic.internalTest2, 0) / students.length).toFixed(1)
+              : '0.0'} <span className="text-xs font-normal text-slate-400">/ 50</span>
+          </div>
+          <span className="text-[11px] text-slate-500 mt-1 block">Midterm Assessment 2</span>
+        </div>
+
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between text-slate-400 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Continuous Assessment Mean</span>
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-700">
+            {students.length > 0
+              ? (students.reduce((acc, s) => acc + s.academic.internalTest1 + s.academic.internalTest2, 0) / students.length).toFixed(1)
+              : '0.0'} <span className="text-xs font-normal text-slate-400">/ 100</span>
+          </div>
+          <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">IAT 1 + IAT 2 combined</span>
+        </div>
+      </div>
+
+      {/* Search bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+          <input
+            type="text"
+            placeholder="Search students by name, roll no..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          />
+        </div>
+        <div className="text-xs text-slate-500 font-semibold">
+          Showing <strong className="text-slate-800">{filteredStudents.length}</strong> of {students.length} students
+        </div>
+      </div>
+
+      {/* Marks Management Table */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-700 font-bold text-[11px] uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th className="py-3.5 px-4 w-48">Student & Roll No</th>
+                <th className="py-3.5 px-3">IAT 1 (50)</th>
+                <th className="py-3.5 px-3">IAT 2 (50)</th>
+                <th className="py-3.5 px-3">Midterm Total (100)</th>
+                <th className="py-3.5 px-3">Assignment (100)</th>
+                <th className="py-3.5 px-3">Lab Score (100)</th>
+                <th className="py-3.5 px-3">Predicted SGPA</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-medium">
+              {filteredStudents.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                    No student records match search filter.
+                  </td>
+                </tr>
+              ) : (
+                filteredStudents.map((s) => {
+                  const p = s.latestPrediction;
+                  const catBadge = getCategoryBadge(p?.category);
+                  const midTotal = s.academic.internalTest1 + s.academic.internalTest2;
+
+                  return (
+                    <tr key={s.id} className="hover:bg-slate-50/80 transition group">
+                      <td className="py-3.5 px-4">
+                        <div
+                          onClick={() => {
+                            onSelectStudent(s);
+                            onViewStudentDetails(s);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <div className="font-bold text-slate-900 group-hover:text-indigo-600 transition">
+                            {s.name}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1 rounded">
+                              {s.rollNo}
+                            </span>
+                            <span className="text-[10px] text-slate-400">Sem {s.semester}</span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                        {s.academic.internalTest1} <span className="text-[10px] text-slate-400 font-normal">/ 50</span>
+                      </td>
+
+                      <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                        {s.academic.internalTest2} <span className="text-[10px] text-slate-400 font-normal">/ 50</span>
+                      </td>
+
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-indigo-700 text-sm">{midTotal}</span>
+                          <div className="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-indigo-600 rounded-full"
+                              style={{ width: `${Math.min(100, midTotal)}%` }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                        {s.academic.assignmentScore}%
+                      </td>
+
+                      <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                        {s.academic.labScore}%
+                      </td>
+
+                      <td className="py-3.5 px-3">
+                        {p ? (
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono font-black text-slate-900 text-sm">
+                              {p.predictedSgpa.toFixed(2)}
+                            </span>
+                            <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full border ${catBadge.bg}`}>
+                              {p.category}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 text-xs italic">Pending</span>
+                        )}
+                      </td>
+
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => onEditStudent(s)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-bold transition active:scale-95 shadow-2xs"
+                            title="Edit Internal Marks & Subject Scores"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>Edit Marks</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              onSelectStudent(s);
+                              onViewStudentDetails(s);
+                            }}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
+                            title="Open Student Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* BATCH ML PREDICTION SUB-TAB */}
+  {adminSubTab === 'batch-predict' && (
+    <div className="space-y-6">
+      {/* Hero Banner for Batch Inference */}
+      <div className="rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 text-white p-6 sm:p-8 shadow-xl border border-indigo-900/50">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-amber-300 text-xs font-bold border border-white/15">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Ensemble ML Inference Engine</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+              Cohort Batch ML Prediction
+            </h2>
+            <p className="text-xs sm:text-sm text-indigo-200 max-w-2xl leading-relaxed">
+              Execute multivariate Ridge Regression and Decision Tree classification simultaneously on all {students.length} enrolled B.Tech CSE AIML student records. Updates predicted SGPA, risk stratifications, and SHAP feature attributions with persistence to database.
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <button
+              onClick={handleRunBatch}
+              disabled={batching}
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-600 to-sky-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-purple-600/30 hover:scale-105 active:scale-95 transition disabled:opacity-60"
+            >
+              <Sparkles className={`w-5 h-5 text-amber-300 ${batching ? 'animate-spin' : ''}`} />
+              <span>{batching ? 'Running Cohort Inference...' : `Run Batch Predict (${students.length} Students)`}</span>
+            </button>
+          </div>
+        </div>
+
+        {batching && (
+          <div className="mt-6 pt-6 border-t border-white/10 space-y-2 animate-in fade-in">
+            <div className="flex items-center justify-between text-xs text-indigo-200">
+              <span>Evaluating academic records and continuous assessments...</span>
+              <span className="font-mono font-bold text-white">In Progress</span>
+            </div>
+            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-amber-400 via-purple-400 to-sky-400 rounded-full animate-pulse w-full" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Predictions Summary Table */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">Latest Cohort Inference Matrix</h3>
+            <p className="text-xs text-slate-500">Live predictions evaluated against current midterms and attendance</p>
+          </div>
+          <span className="text-xs font-bold text-indigo-600 font-mono bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-200">
+            {students.length} Inferences Active
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-700 font-bold text-[11px] uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th className="py-3 px-4">Student & Roll No</th>
+                <th className="py-3 px-3">Attendance</th>
+                <th className="py-3 px-3">Prior CGPA</th>
+                <th className="py-3 px-3">Predicted SGPA</th>
+                <th className="py-3 px-3">Projected Score</th>
+                <th className="py-3 px-3">Category</th>
+                <th className="py-3 px-3">Risk Tier</th>
+                <th className="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-medium">
+              {students.map((s) => {
+                const p = s.latestPrediction;
+                const catBadge = getCategoryBadge(p?.category);
+                const riskBadge = getRiskBadge(p?.riskLevel);
+
+                return (
+                  <tr key={s.id} className="hover:bg-slate-50/70 transition">
+                    <td className="py-3.5 px-4">
+                      <div
+                        onClick={() => {
+                          onSelectStudent(s);
+                          onViewStudentDetails(s);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <span className="font-bold text-slate-900 hover:text-indigo-600 transition block">
+                          {s.name}
+                        </span>
+                        <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-1 rounded">
+                          {s.rollNo}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                      {s.academic.attendancePercent}%
+                    </td>
+
+                    <td className="py-3.5 px-3 font-mono font-bold text-slate-800">
+                      {s.academic.previousCgpa.toFixed(2)}
+                    </td>
+
+                    <td className="py-3.5 px-3">
+                      {p ? (
+                        <span className="font-mono text-base font-black text-indigo-700">
+                          {p.predictedSgpa.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 italic">Pending</span>
+                      )}
+                    </td>
+
+                    <td className="py-3.5 px-3 font-mono text-slate-800 font-bold">
+                      {p ? `${p.predictedScore}%` : '-'}
+                    </td>
+
+                    <td className="py-3.5 px-3">
+                      {p ? (
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${catBadge.bg}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${catBadge.dot}`} />
+                          <span>{p.category}</span>
+                        </span>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+
+                    <td className="py-3.5 px-3">
+                      {p ? (
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${riskBadge.bg}`}>
+                          <span>{p.riskLevel}</span>
+                        </span>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleSinglePredict(s)}
+                          disabled={predictingId === s.id}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition"
+                          title="Re-run Individual Prediction"
+                        >
+                          <Sparkles className={`w-4 h-4 ${predictingId === s.id ? 'animate-spin text-purple-600' : ''}`} />
+                        </button>
+                        <button
+                          onClick={() => onViewReport(s)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
+                          title="View Official Report Card"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            onSelectStudent(s);
+                            onViewStudentDetails(s);
+                          }}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
+                          title="Open Student Profile"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )}

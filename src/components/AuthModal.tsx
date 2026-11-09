@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Shield, GraduationCap, Lock, Mail, User, Phone, Sparkles, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
 import { UserAccount, Student } from '../types';
 
-interface AuthModalProps {
+export interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAuthSuccess: (user: UserAccount, student?: Student) => void;
+  initialRole?: 'admin' | 'student';
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  onAuthSuccess,
+  initialRole = 'student',
+}) => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
-  const [roleMode, setRoleMode] = useState<'student' | 'admin'>('student');
+  const [roleMode, setRoleMode] = useState<'student' | 'admin'>(initialRole);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Form states
-  const [identifier, setIdentifier] = useState('RA2311003010012'); // default Aarav
+  const [identifier, setIdentifier] = useState('RA2311003010012');
   const [password, setPassword] = useState('student123');
 
   // Register fields
@@ -27,7 +33,36 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
   const [regPassword, setRegPassword] = useState('student123');
   const [regSemester, setRegSemester] = useState(4);
 
+  useEffect(() => {
+    if (isOpen) {
+      const mode = initialRole || 'student';
+      setRoleMode(mode);
+      setActiveTab('login');
+      setErrorMessage(null);
+      if (mode === 'admin') {
+        setIdentifier('admin@edupredict.ac.in');
+        setPassword('admin123');
+      } else {
+        setIdentifier('RA2311003010012');
+        setPassword('student123');
+      }
+    }
+  }, [isOpen, initialRole]);
+
   if (!isOpen) return null;
+
+  const handleRoleSwitch = (newRole: 'student' | 'admin') => {
+    setRoleMode(newRole);
+    setErrorMessage(null);
+    if (newRole === 'admin') {
+      setActiveTab('login');
+      setIdentifier('admin@edupredict.ac.in');
+      setPassword('admin123');
+    } else {
+      setIdentifier('RA2311003010012');
+      setPassword('student123');
+    }
+  };
 
   const handleQuickDemoLogin = async (type: 'admin' | 'aarav' | 'priya' | 'rohan') => {
     setLoading(true);
@@ -96,7 +131,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         phone: regPhone || '+91 98765 00000',
         password: regPassword || 'student123',
         semester: regSemester,
-        department: 'CSE - Artificial Intelligence & Machine Learning'
+        department: 'CSE - Artificial Intelligence & Machine Learning',
       });
       onAuthSuccess(res.user, res.student);
       onClose();
@@ -110,55 +145,95 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-100 my-8">
-        
         {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 p-2 rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+          aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
+        {/* Portal Type Indicator & Role Switcher */}
+        <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl mb-6 text-xs sm:text-sm font-bold text-slate-600">
+          <button
+            onClick={() => handleRoleSwitch('admin')}
+            className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition ${
+              roleMode === 'admin'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'hover:text-slate-900'
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            <span>Admin Portal</span>
+          </button>
+          <button
+            onClick={() => handleRoleSwitch('student')}
+            className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition ${
+              roleMode === 'student'
+                ? 'bg-purple-600 text-white shadow-xs'
+                : 'hover:text-slate-900'
+            }`}
+          >
+            <GraduationCap className="w-4 h-4" />
+            <span>Student Portal</span>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-sky-500 text-white shadow-lg shadow-indigo-500/30 mb-3">
-            <GraduationCap className="w-6 h-6" />
+          <div
+            className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-lg mb-3 ${
+              roleMode === 'admin'
+                ? 'bg-gradient-to-tr from-indigo-700 via-indigo-600 to-purple-700 shadow-indigo-500/30'
+                : 'bg-gradient-to-tr from-purple-600 via-purple-700 to-sky-500 shadow-purple-500/30'
+            }`}
+          >
+            {roleMode === 'admin' ? <Shield className="w-6 h-6" /> : <GraduationCap className="w-6 h-6" />}
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            {activeTab === 'login' ? 'Welcome to EduPredict' : 'Student Self-Registration'}
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            {activeTab === 'login'
+              ? roleMode === 'admin'
+                ? 'Admin Portal Sign In'
+                : 'Student Portal Sign In'
+              : 'Student Self-Registration'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             {activeTab === 'login'
-              ? 'Access academic dashboards, marks analytics, and ML performance projections'
+              ? roleMode === 'admin'
+                ? 'Faculty & Administrator Access • Edit Marks, Attendance & Models'
+                : 'Engineering Student Access • Personal Scorecards & ML Projections'
               : 'Enroll your profile for B.Tech CSE AIML machine learning evaluation'}
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl mb-5 text-sm font-semibold text-slate-600">
-          <button
-            onClick={() => {
-              setActiveTab('login');
-              setErrorMessage(null);
-            }}
-            className={`py-2 rounded-lg transition ${
-              activeTab === 'login' ? 'bg-white text-indigo-700 shadow-xs' : 'hover:text-slate-900'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('register');
-              setErrorMessage(null);
-            }}
-            className={`py-2 rounded-lg transition ${
-              activeTab === 'register' ? 'bg-white text-indigo-700 shadow-xs' : 'hover:text-slate-900'
-            }`}
-          >
-            Register Student
-          </button>
-        </div>
+        {/* If Student Mode, provide Login vs Register Switcher */}
+        {roleMode === 'student' && (
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl mb-5 text-xs font-bold text-slate-600">
+            <button
+              onClick={() => {
+                setActiveTab('login');
+                setErrorMessage(null);
+              }}
+              className={`py-1.5 rounded-lg transition ${
+                activeTab === 'login' ? 'bg-white text-purple-700 shadow-xs' : 'hover:text-slate-900'
+              }`}
+            >
+              Sign In Existing Student
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('register');
+                setErrorMessage(null);
+              }}
+              className={`py-1.5 rounded-lg transition ${
+                activeTab === 'register' ? 'bg-white text-purple-700 shadow-xs' : 'hover:text-slate-900'
+              }`}
+            >
+              New Student Registration
+            </button>
+          </div>
+        )}
 
         {/* Error message */}
         {errorMessage && (
@@ -176,48 +251,52 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-indigo-900 flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                  Instant 1-Click Demo Accounts:
+                  {roleMode === 'admin' ? '1-Click Faculty Admin Demo:' : '1-Click Student Demos:'}
                 </span>
                 <span className="text-[10px] text-indigo-600 font-medium">B.Tech 2nd Year CSE AIML</span>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              {roleMode === 'admin' ? (
                 <button
                   type="button"
                   onClick={() => handleQuickDemoLogin('admin')}
                   disabled={loading}
-                  className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-white border border-indigo-200/80 text-xs font-semibold text-slate-800 hover:border-indigo-500 hover:text-indigo-600 shadow-xs transition"
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 text-xs font-bold shadow-xs transition active:scale-98"
                 >
-                  <Shield className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>Faculty Admin</span>
+                  <Shield className="w-4 h-4" />
+                  <span>Click to Login as Faculty Admin (admin@edupredict.ac.in)</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('aarav')}
-                  disabled={loading}
-                  className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-white border border-emerald-200/80 text-xs font-semibold text-slate-800 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition"
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Aarav (9.4 CGPA)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('rohan')}
-                  disabled={loading}
-                  className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-white border border-amber-200/80 text-xs font-semibold text-slate-800 hover:border-amber-500 hover:text-amber-700 shadow-xs transition"
-                >
-                  <User className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Rohan (Average)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('priya')}
-                  disabled={loading}
-                  className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-white border border-rose-200/80 text-xs font-semibold text-slate-800 hover:border-rose-500 hover:text-rose-700 shadow-xs transition"
-                >
-                  <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>Priya (At-Risk)</span>
-                </button>
-              </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickDemoLogin('aarav')}
+                    disabled={loading}
+                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white border border-emerald-200/80 text-[11px] font-semibold text-slate-800 hover:border-emerald-500 hover:text-emerald-700 shadow-2xs transition"
+                  >
+                    <span className="font-bold text-emerald-700">Aarav</span>
+                    <span className="text-[9px] text-slate-500">9.4 CGPA (High)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickDemoLogin('rohan')}
+                    disabled={loading}
+                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white border border-amber-200/80 text-[11px] font-semibold text-slate-800 hover:border-amber-500 hover:text-amber-700 shadow-2xs transition"
+                  >
+                    <span className="font-bold text-amber-700">Rohan</span>
+                    <span className="text-[9px] text-slate-500">7.2 CGPA (Mid)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickDemoLogin('priya')}
+                    disabled={loading}
+                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white border border-rose-200/80 text-[11px] font-semibold text-slate-800 hover:border-rose-500 hover:text-rose-700 shadow-2xs transition"
+                  >
+                    <span className="font-bold text-rose-700">Priya</span>
+                    <span className="text-[9px] text-slate-500">5.8 CGPA (Risk)</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="relative flex items-center justify-center my-4">
@@ -230,7 +309,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             <form onSubmit={handleStandardLogin} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Roll Number or University Email
+                  {roleMode === 'admin' ? 'University / Faculty Email' : 'Student Roll Number or Email'}
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -238,24 +317,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     type="text"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="e.g. RA2311003010012 or admin@edupredict.ac.in"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
+                    placeholder={
+                      roleMode === 'admin'
+                        ? 'admin@edupredict.ac.in'
+                        : 'e.g. RA2311003010012 or student email'
+                    }
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 font-mono"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Password
-                </label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Password</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password (demo: student123 or admin123)"
+                    placeholder={roleMode === 'admin' ? 'admin123' : 'student123'}
                     className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
                     required
                   />
@@ -265,9 +346,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-98 transition disabled:opacity-60"
+                className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white shadow-md active:scale-98 transition disabled:opacity-60 ${
+                  roleMode === 'admin'
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700'
+                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-500/25 hover:from-purple-700 hover:to-indigo-700'
+                }`}
               >
-                {loading ? 'Authenticating...' : 'Sign In to Portal'}
+                {loading ? 'Authenticating...' : roleMode === 'admin' ? 'Sign In to Admin Portal' : 'Sign In to Student Portal'}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
@@ -275,7 +360,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         )}
 
         {/* Register Mode Content */}
-        {activeTab === 'register' && (
+        {activeTab === 'register' && roleMode === 'student' && (
           <form onSubmit={handleRegister} className="space-y-3.5">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Full Student Name *</label>
@@ -286,7 +371,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
                   placeholder="e.g. Varun Varma"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
                   required
                 />
               </div>
@@ -300,7 +385,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                   value={regRollNo}
                   onChange={(e) => setRegRollNo(e.target.value)}
                   placeholder="RA2311003010999"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 font-mono"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 font-mono"
                   required
                 />
               </div>
@@ -309,7 +394,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                 <select
                   value={regSemester}
                   onChange={(e) => setRegSemester(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 bg-white"
                 >
                   <option value={3}>Semester 3 (2nd Year)</option>
                   <option value={4}>Semester 4 (2nd Year)</option>
@@ -328,7 +413,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   placeholder="vv6222@srmist.edu.in"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
                   required
                 />
               </div>
@@ -344,7 +429,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
                   />
                 </div>
               </div>
@@ -357,7 +442,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="student123"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600"
                   />
                 </div>
               </div>
@@ -370,7 +455,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-98 transition disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-purple-500/25 hover:from-purple-700 hover:to-indigo-700 active:scale-98 transition disabled:opacity-60"
             >
               {loading ? 'Creating Record...' : 'Complete Registration'}
               <ArrowRight className="w-4 h-4" />

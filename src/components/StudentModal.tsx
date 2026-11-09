@@ -119,13 +119,37 @@ export const StudentModal: React.FC<StudentModalProps> = ({
     quickScore >= 85 ? 'Excellent' : quickScore >= 70 ? 'Good' : quickScore >= 50 ? 'Average' : 'Needs Improvement';
   const badgeInfo = getCategoryBadge(quickCategory);
 
-  const handleSubjectChange = (index: number, field: 'internal' | 'assignment', val: number) => {
+  const handleSubjectChange = (
+    index: number,
+    field: 'internal' | 'assignment' | 'attendedClasses' | 'totalClasses',
+    val: number
+  ) => {
     const updated = [...subjects];
-    updated[index] = {
-      ...updated[index],
-      [field]: Math.max(0, Math.min(50, val))
-    };
+    const item = { ...updated[index] };
+    if (field === 'internal' || field === 'assignment') {
+      item[field] = Math.max(0, Math.min(50, val));
+    } else if (field === 'totalClasses') {
+      item.totalClasses = Math.max(1, Math.round(val));
+      item.attendedClasses = Math.min(item.totalClasses, item.attendedClasses || 0);
+      item.attendancePercent = Math.round((item.attendedClasses / item.totalClasses) * 1000) / 10;
+    } else if (field === 'attendedClasses') {
+      const total = item.totalClasses || 40;
+      item.attendedClasses = Math.max(0, Math.min(total, Math.round(val)));
+      item.attendancePercent = Math.round((item.attendedClasses / total) * 1000) / 10;
+    }
+    updated[index] = item;
     setSubjects(updated);
+  };
+
+  const handleSyncFromSubjects = () => {
+    const totalHeld = subjects.reduce((sum, s) => sum + (s.totalClasses || 0), 0);
+    const totalAttended = subjects.reduce((sum, s) => sum + (s.attendedClasses || 0), 0);
+    if (totalHeld > 0) {
+      setAttendance(Math.round((totalAttended / totalHeld) * 1000) / 10);
+    }
+    const avgInternal = subjects.reduce((sum, s) => sum + (s.internal || 0), 0) / (subjects.length || 1);
+    setInternal1(Math.round(avgInternal * 10) / 10);
+    setInternal2(Math.round(avgInternal * 10) / 10);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -237,7 +261,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            Subject Marks (6 Courses)
+            Subject Marks & Attendance (6 Courses)
           </button>
           <button
             type="button"
@@ -422,64 +446,114 @@ export const StudentModal: React.FC<StudentModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: SUBJECT BREAKDOWN */}
+          {/* TAB 2: SUBJECT MARKS & ATTENDANCE */}
           {activeTab === 'subjects' && (
-            <div className="space-y-3">
-              <p className="text-xs text-slate-500">
-                Configure continuous internal assessment (out of 50) and assignment scores (out of 50) for core B.Tech AIML subjects:
-              </p>
-              <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1">
-                {subjects.map((sub, idx) => (
-                  <div
-                    key={sub.code}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2"
-                  >
-                    <div className="sm:w-1/2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold font-mono text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
-                          {sub.code}
-                        </span>
-                        <span className="text-xs text-slate-400 font-semibold">{sub.credits} Credits</span>
-                      </div>
-                      <div className="text-xs font-semibold text-slate-800 mt-1 line-clamp-1">{sub.name}</div>
-                    </div>
+            <div className="space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-indigo-50/70 border border-indigo-100">
+                <p className="text-xs text-indigo-900 font-medium">
+                  Edit internal marks (out of 50), assignments (out of 50), and attendance classes for each subject:
+                </p>
+                <button
+                  type="button"
+                  onClick={handleSyncFromSubjects}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 hover:text-indigo-900 underline shrink-0"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Sync Overall Attendance & IAT</span>
+                </button>
+              </div>
 
-                    <div className="flex items-center gap-3 sm:w-1/2">
-                      <div className="flex-1">
-                        <label className="block text-[10px] text-slate-500 font-semibold mb-0.5">
-                          Internal (50)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="50"
-                          value={sub.internal}
-                          onChange={(e) => handleSubjectChange(idx, 'internal', Number(e.target.value))}
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono"
-                        />
+              <div className="max-h-[340px] overflow-y-auto space-y-2.5 pr-1">
+                {subjects.map((sub, idx) => {
+                  const totalClasses = sub.totalClasses || 40;
+                  const attendedClasses = sub.attendedClasses ?? Math.round(totalClasses * ((sub.attendancePercent || 80) / 100));
+                  const pct = sub.attendancePercent ?? (totalClasses > 0 ? Math.round((attendedClasses / totalClasses) * 1000) / 10 : 0);
+                  const isEligible = pct >= 75;
+
+                  return (
+                    <div
+                      key={sub.code}
+                      className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold font-mono text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">
+                            {sub.code}
+                          </span>
+                          <span className="text-xs font-bold text-slate-900 line-clamp-1">{sub.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-semibold text-slate-500">{sub.credits} Credits</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            isEligible
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                          }`}>
+                            {pct}% • {isEligible ? 'Eligible' : 'Shortage'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <label className="block text-[10px] text-slate-500 font-semibold mb-0.5">
-                          Assignment (50)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="50"
-                          value={sub.assignment}
-                          onChange={(e) => handleSubjectChange(idx, 'assignment', Number(e.target.value))}
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono"
-                        />
-                      </div>
-                      <div className="text-right w-12 shrink-0">
-                        <span className="text-[10px] text-slate-400 block">Total</span>
-                        <span className="text-xs font-bold text-slate-800 font-mono">
-                          {sub.internal + sub.assignment}
-                        </span>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 border-t border-slate-200/70">
+                        <div>
+                          <label className="block text-[10px] text-slate-600 font-bold mb-0.5">
+                            Internal (/50)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="50"
+                            value={sub.internal}
+                            onChange={(e) => handleSubjectChange(idx, 'internal', Number(e.target.value))}
+                            className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono font-bold text-slate-800 bg-white"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-slate-600 font-bold mb-0.5">
+                            Assignment (/50)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="50"
+                            value={sub.assignment}
+                            onChange={(e) => handleSubjectChange(idx, 'assignment', Number(e.target.value))}
+                            className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono font-bold text-slate-800 bg-white"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-slate-600 font-bold mb-0.5">
+                            Classes Attended
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            max={totalClasses}
+                            value={attendedClasses}
+                            onChange={(e) => handleSubjectChange(idx, 'attendedClasses', Number(e.target.value))}
+                            className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono font-bold text-slate-800 bg-white"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-slate-600 font-bold mb-0.5">
+                            Total Classes
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={totalClasses}
+                            onChange={(e) => handleSubjectChange(idx, 'totalClasses', Number(e.target.value))}
+                            className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 font-mono font-bold text-slate-800 bg-white"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -600,7 +674,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700 active:scale-98 transition disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
-              <span>{saving ? 'Saving...' : student ? 'Update & Re-Predict' : 'Enroll & Run ML'}</span>
+              <span>{saving ? 'Saving to Database...' : student ? 'Save Changes' : 'Enroll Student & Save'}</span>
             </button>
           </div>
         </form>

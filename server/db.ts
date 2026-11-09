@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { AcademicRecord, PredictionResult, Student, runStudentPrediction } from './mlEngine.ts';
+import { type AcademicRecord, type PredictionResult, type Student, runStudentPrediction } from './mlEngine.ts';
 
 const DB_DIR = path.resolve(process.cwd(), 'data');
 const DB_FILE = path.join(DB_DIR, 'students_database.json');
 
-import { Teacher } from '../src/types/index.ts';
+import type { Teacher } from '../src/types/index.ts';
 
 export interface UserAccount {
   id: string;
@@ -656,14 +656,50 @@ class DatabaseManager {
     if (index === -1) return null;
 
     const current = this.data.students[index];
-    const updatedAcademic: AcademicRecord = updates.academic
-      ? {
-          ...current.academic,
-          ...updates.academic,
-          studentId: current.id,
-          updatedAt: new Date().toISOString()
+    let updatedAcademic: AcademicRecord = current.academic;
+
+    if (updates.academic) {
+      // Process subjects if provided
+      let subjects = current.academic.subjects;
+      if (updates.academic.subjects && Array.isArray(updates.academic.subjects)) {
+        subjects = updates.academic.subjects.map(sub => {
+          const totalClasses = Math.max(1, Math.round(Number(sub.totalClasses) || 40));
+          const attendedClasses = Math.min(totalClasses, Math.max(0, Math.round(Number(sub.attendedClasses) || 0)));
+          const attendancePercent = Math.round((attendedClasses / totalClasses) * 1000) / 10;
+          return {
+            ...sub,
+            internal: Math.min(50, Math.max(0, Number(sub.internal) || 0)),
+            assignment: Math.min(50, Math.max(0, Number(sub.assignment) || 0)),
+            credits: Number(sub.credits) || 3,
+            totalClasses,
+            attendedClasses,
+            attendancePercent
+          };
+        });
+      }
+
+      // Calculate or use overall attendance
+      let overallAttendance = updates.academic.attendancePercent !== undefined
+        ? Number(updates.academic.attendancePercent)
+        : current.academic.attendancePercent;
+
+      if (updates.academic.subjects && updates.academic.attendancePercent === undefined) {
+        const totalHeld = subjects.reduce((sum, s) => sum + (s.totalClasses || 0), 0);
+        const totalAttended = subjects.reduce((sum, s) => sum + (s.attendedClasses || 0), 0);
+        if (totalHeld > 0) {
+          overallAttendance = Math.round((totalAttended / totalHeld) * 1000) / 10;
         }
-      : current.academic;
+      }
+
+      updatedAcademic = {
+        ...current.academic,
+        ...updates.academic,
+        attendancePercent: overallAttendance,
+        subjects,
+        studentId: current.id,
+        updatedAt: new Date().toISOString()
+      };
+    }
 
     // Rerun ML prediction automatically on academic updates
     const newPrediction = runStudentPrediction(updatedAcademic);

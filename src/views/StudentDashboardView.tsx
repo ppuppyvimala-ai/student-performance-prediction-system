@@ -18,13 +18,19 @@ import {
 } from 'lucide-react';
 import { Radar, Line } from 'react-chartjs-2';
 import '../utils/chartSetup';
-import { Student, Teacher } from '../types';
+import { Student, Teacher, UserAccount } from '../types';
 import { getCategoryBadge, getRiskBadge, getGradeLetter } from '../utils/formatters';
+import { NavigationHeader } from '../components/NavigationHeader';
 
 interface StudentDashboardViewProps {
   students: Student[];
   currentStudent: Student | null;
+  currentUser?: UserAccount | null;
   teachers?: Teacher[];
+  onNavigateHome: () => void;
+  onNavigateBack: () => void;
+  onLogout?: () => void;
+  onOpenAuth?: () => void;
   onSelectStudent: (student: Student) => void;
   onOpenWhatIf: () => void;
   onViewReport: (student: Student) => void;
@@ -35,14 +41,22 @@ interface StudentDashboardViewProps {
 export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({
   students,
   currentStudent,
+  currentUser,
   teachers = [],
+  onNavigateHome,
+  onNavigateBack,
+  onLogout,
+  onOpenAuth,
   onSelectStudent,
   onOpenWhatIf,
   onViewReport,
   onRunPrediction,
   onNavigateToFaculty,
 }) => {
-  const student = currentStudent || students[0];
+  // If a student account is logged in, lock view exclusively to their own student record
+  const student = (currentUser?.role === 'student' && currentUser.studentId)
+    ? (students.find((s) => s.id === currentUser.studentId) || currentStudent || students[0])
+    : (currentStudent || students[0]);
 
   if (!student) {
     return (
@@ -129,48 +143,72 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      
-      {/* Student Switcher & Quick Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Student Academic & Performance Portal</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Personal Scorecard, Subject Mastery, and ML Predictive Guidance
-          </p>
-        </div>
+      {/* Navigation Header with Home, Back, Student Menu, and Logout */}
+      <NavigationHeader
+        title="Student Academic & Performance Portal"
+        subtitle={`Personal Scorecard & ML Guidance • ${student.name} (${student.rollNo})`}
+        breadcrumbs={[
+          { label: 'Home', onClick: onNavigateHome },
+          { label: 'Student Portal', active: true },
+          { label: `${student.name} (${student.rollNo})`, active: true },
+        ]}
+        portalType="student"
+        currentUser={currentUser}
+        onNavigateHome={onNavigateHome}
+        onNavigateBack={onNavigateBack}
+        onLogout={onLogout}
+        onOpenAuth={onOpenAuth}
+        onSelectStudentSection={(section) => {
+          if (section === 'what-if') {
+            onOpenWhatIf();
+          } else if (section === 'report') {
+            onViewReport(student);
+          } else if (section === 'teachers' && onNavigateToFaculty) {
+            onNavigateToFaculty();
+          } else {
+            let targetId = '';
+            if (section === 'scorecard') targetId = 'student-scorecard';
+            else if (section === 'attendance') targetId = 'student-attendance';
+            else if (section === 'marks') targetId = 'student-marks';
+            else if (section === 'recommendations') targetId = 'student-recommendations';
+            if (targetId) {
+              const el = document.getElementById(targetId);
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        }}
+        actions={
+          <div className="flex items-center gap-2">
+            {currentUser?.role !== 'student' && (
+              <select
+                value={student.id}
+                onChange={(e) => {
+                  const found = students.find((s) => s.id === e.target.value);
+                  if (found) onSelectStudent(found);
+                }}
+                className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-xs"
+              >
+                {students.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.rollNo})
+                  </option>
+                ))}
+              </select>
+            )}
+            <button
+              onClick={() => onViewReport(student)}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 active:scale-95 transition"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Report Card</span>
+            </button>
+          </div>
+        }
+      />
 
-        {/* Quick Student Selector */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 font-semibold hidden md:inline">Viewing Student:</span>
-          <select
-            value={student.id}
-            onChange={(e) => {
-              const found = students.find((s) => s.id === e.target.value);
-              if (found) onSelectStudent(found);
-            }}
-            className="px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-xs"
-          >
-            {students.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} ({s.rollNo})
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={() => onViewReport(student)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3 py-2 text-xs sm:text-sm font-bold text-indigo-700 hover:bg-indigo-100 active:scale-95 transition"
-          >
-            <FileText className="w-4 h-4" />
-            <span className="hidden sm:inline">Report Card</span>
-          </button>
-        </div>
-      </div>
 
       {/* STUDENT PROFILE HERO CARD */}
-      <div className="rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 text-white p-6 sm:p-8 shadow-2xl border border-indigo-900/50 relative overflow-hidden">
+      <div id="student-scorecard" className="scroll-mt-32 sm:scroll-mt-36 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 text-white p-6 sm:p-8 shadow-2xl border border-indigo-900/50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -293,7 +331,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({
       </div>
 
       {/* SUBJECT-WISE ATTENDANCE MANAGEMENT & ELIGIBILITY SECTION */}
-      <div className="rounded-2xl bg-white border border-slate-200/80 shadow-xs p-5 sm:p-6 space-y-4">
+      <div id="student-attendance" className="scroll-mt-32 sm:scroll-mt-36 rounded-2xl bg-white border border-slate-200/80 shadow-xs p-5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -503,7 +541,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({
 
       {/* PRESCRIPTIVE IMPROVEMENT ROADMAP */}
       {pred && (
-        <div className="rounded-2xl bg-gradient-to-r from-indigo-50/80 via-purple-50/60 to-blue-50/80 border border-indigo-200/80 p-5 sm:p-6 shadow-xs">
+        <div id="student-recommendations" className="scroll-mt-32 sm:scroll-mt-36 rounded-2xl bg-gradient-to-r from-indigo-50/80 via-purple-50/60 to-blue-50/80 border border-indigo-200/80 p-5 sm:p-6 shadow-xs">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-indigo-600" />
             <h3 className="text-sm font-bold text-indigo-950 uppercase tracking-wider">
@@ -528,7 +566,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({
       )}
 
       {/* SUBJECT-WISE MARKS ACCORDION/GRID */}
-      <div className="rounded-2xl bg-white border border-slate-200/80 shadow-xs p-5 sm:p-6">
+      <div id="student-marks" className="scroll-mt-32 sm:scroll-mt-36 rounded-2xl bg-white border border-slate-200/80 shadow-xs p-5 sm:p-6">
         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-indigo-600" />
           <span>Detailed Subject Score Breakdown</span>
